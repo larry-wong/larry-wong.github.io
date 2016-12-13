@@ -10,7 +10,7 @@ tags:
 所谓网络唤醒（Wake On Lan），即通过给网卡发送魔术包（Magic Package）来实现远程开机。此功能需要主板和网卡的支持，在BIOS可以查看并开启此功能。
 
 第一次看到此项技术的时候，心里很兴奋，因为我一直在想着用手机远程打开家里的电脑，然后远程登录进去操作，虽然不知道这样有什么实用性，但我觉得很“酷”。为实现远程开机，我写了一个android小应用用来发送魔法包，先贴2张截图：
-![](https://res.cloudinary.com/larry/image/upload/c_scale,w_300/v1469584329/wol_android_ui_1_jljspw.png)  ![](https://res.cloudinary.com/larry/image/upload/c_scale,w_300/v1469584332/wol_android_ui_2_vvyysf.png)
+![](//res.cloudinary.com/larry/image/upload/c_scale,w_300/v1469584329/wol_android_ui_1_jljspw.png)  ![](//res.cloudinary.com/larry/image/upload/c_scale,w_300/v1469584332/wol_android_ui_2_vvyysf.png)
 界面很简洁，甚至都是Android原生组件，但我就是喜欢实用简单的东西。程序核心代码：
 ```
 private void sendMagicPackage(String host, String mac, String port)

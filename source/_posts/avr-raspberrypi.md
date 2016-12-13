@@ -100,10 +100,10 @@ burn: $(HEX_FLASH)
     连接好下载器以及开发板之后，make，make burn就将程序烧制单片机上了，可以检验二极管的效果。
 
 8. 焊接万用板，如果你愿意的话。第一次使用烙铁，焊得很丑：
-![](https://res.cloudinary.com/larry/image/upload/c_scale,w_300/a_180/v1469583825/avr_raspberrypi_1_qqn0a6.jpg) ![](https://res.cloudinary.com/larry/image/upload/c_scale,h_300/a_90/v1469547293/avr_raspberrypi_2_cwbanf.jpg)
+![](//res.cloudinary.com/larry/image/upload/c_scale,w_300/a_180/v1469583825/avr_raspberrypi_1_qqn0a6.jpg) ![](//res.cloudinary.com/larry/image/upload/c_scale,h_300/a_90/v1469547293/avr_raspberrypi_2_cwbanf.jpg)
 
 附上一张全家福（Raspberry Pi， avr最小板， 我焊的走马灯）：
-![](https://res.cloudinary.com/larry/image/upload/q_40/v1469583102/avr_raspberrypi_3_i4hp9k.jpg)
+![](//res.cloudinary.com/larry/image/upload/q_40/v1469583102/avr_raspberrypi_3_i4hp9k.jpg)
 
 记录下遇到的一些问题：
 - Raspberry Pi无论烧入什么系统都无法正常启动：换了一张sd卡得到解决，虽然ARM的系统还是不能开机，但是至少debain的可以了。

@@ -10,7 +10,7 @@ tags:
 
 上一篇基于Arduino制作的小车比较入门，只需像积木那样把模块拼起来，然而，它却开启了我的嵌入式之门。继那之后，又实现了一款基于AVR的蓝牙小车。也是去年的事了，现在才记录。
 
-较上一篇[基于Arduino和Android的蓝牙遥控小车](/2014/05/03/android-arduino-bluetooth-car/ "基于Arduino和Android的蓝牙遥控小车")的改进：
+与上一篇[基于Arduino和Android的蓝牙遥控小车](/2014/05/03/android-arduino-bluetooth-car/ "基于Arduino和Android的蓝牙遥控小车")对比：
 - 舍弃昂贵的Arduino，采用性价比更高的AVR ATmega16A做MCU。
 - 舍弃昂贵的电机驱动板，使用桥式电路代替。
 - 舍弃比较鸡肋的红外避障功能。
@@ -18,7 +18,7 @@ tags:
 - 改进Android的用于界面：端增加蓝牙设备扫描选择界面以及操作杆轨道等。
 
 小车电路图（图中电阻均为102欧姆，NPN均为D882，PNP均为B772）：
-![](https://res.cloudinary.com/larry/image/upload/v1469544916/android_avr_gbiyvs.png)
+![](//res.cloudinary.com/larry/image/upload/v1469544916/android_avr_gbiyvs.png)
 
 小车原理：
 > 通过2组桥式电路分别控制驱动电机和转向电机。AVR的PB0-PB3控制驱动电机，PB4-PB7控制转向电机。三极管起开关作用。
@@ -59,14 +59,14 @@ int main() {
 ```
 
 Android端的代码不贴了，贴几张界面截图：
-![](https://res.cloudinary.com/larry/image/upload/c_scale,w_280/v1469545396/android_avr_ui_1_zfrtl2.png)    <span style='display: inline-block;'> ![](https://res.cloudinary.com/larry/image/upload/c_scale,w_420/v1469545398/android_avr_ui_2_q3cojt.png)<br>
-![](https://res.cloudinary.com/larry/image/upload/c_scale,w_420/v1469545412/android_avr_ui_3_uldty8.png)</span>
+![](//res.cloudinary.com/larry/image/upload/c_scale,w_280/v1469545396/android_avr_ui_1_zfrtl2.png)    <span style='display: inline-block;'> ![](//res.cloudinary.com/larry/image/upload/c_scale,w_420/v1469545398/android_avr_ui_2_q3cojt.png)<br>
+![](//res.cloudinary.com/larry/image/upload/c_scale,w_420/v1469545412/android_avr_ui_3_uldty8.png)</span>
 Android端实现的功能比较多，一开始设计时有PWM变速、蜂鸣器、刹车、LED灯、激光射线、重力感应以及一个RGB三通道均可PWM调色的变色灯。
 这部分设计的Android和AVR代码均已完成，但在焊万用板时出现问题，故只做了一个最简单的版本（前进，后退，左转，右转，停止），如有兴趣，参考svn:
 svn://larry-wang.com/android/remote_car_v2 (guest/guest)
 
 最后贴下成品图：
-![](https://res.cloudinary.com/larry/image/upload/q_40/v1469545431/android_avr_ui_car_yhy6xr.jpg)
+![](//res.cloudinary.com/larry/image/upload/q_40/v1469545431/android_avr_ui_car_yhy6xr.jpg)
 
 **注：**
 - 桥式电路中，每个三极管应并一个二极管防止倒流，这里偷懒没有使用。

@@ -9,7 +9,7 @@ tags:
 
 最近入了一块蓝色妖姬的摄像头，内置麦，连上fedora18(LXDE)后两者都不工作。记录一下配置过程。
 麦克风比较简单，直接上图：
-![](https://res.cloudinary.com/larry/image/upload/v1469546452/fedora18_uvc_rymmyl.png)
+![](//res.cloudinary.com/larry/image/upload/v1469546452/fedora18_uvc_rymmyl.png)
 注意Buit-in Audio选的是Output而不是Duplex。
 
 视频部分安装UVC驱动：

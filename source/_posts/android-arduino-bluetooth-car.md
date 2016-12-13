@@ -24,23 +24,23 @@ Android做上位机，通过蓝牙给Arduino发送控制指令，实现的功能
 
 各个模块。
 Arduino:
-![](https://res.cloudinary.com/larry/image/upload/v1469545955/android_arduino_1_p4y3mr.png)
+![](//res.cloudinary.com/larry/image/upload/v1469545955/android_arduino_1_p4y3mr.png)
 对于Arduino的介绍就不多说了，[官网](http://www.arduino.cc/)资料很详尽。
 
 蓝牙接收模块:
-![](https://res.cloudinary.com/larry/image/upload/v1469545944/android_arduino_2_aourtz.png)
+![](//res.cloudinary.com/larry/image/upload/v1469545944/android_arduino_2_aourtz.png)
 这里我只用到了VCC/GND供电以及RXD/TXD与Arduino进行串口通信。
 
 红外探测模块:
-![](https://res.cloudinary.com/larry/image/upload/v1469545944/android_arduino_3_qy8rai.png)
+![](//res.cloudinary.com/larry/image/upload/v1469545944/android_arduino_3_qy8rai.png)
 此模块由一个主模块（左）和四个子模块（右）构成。每个子模块探测单个方向的障碍物情况，主模块通过4个I/O口与Arduino通信。
 
 电机驱动模块:
-![](https://res.cloudinary.com/larry/image/upload/v1469545944/android_arduino_4_o1g8tf.png)
+![](//res.cloudinary.com/larry/image/upload/v1469545944/android_arduino_4_o1g8tf.png)
 这是一款两路的电机驱动，用来控制小车左右两边的电机。EA和EB接Arduino的PWM口，控制电机转速，IA和IB接普通I/O口，控制电机转向。OUT\_A和OUT\_B分别接小车两边的电机。
 
 电路图：
-![](https://res.cloudinary.com/larry/image/upload/v1469545948/android_arduino_5_khsarl.png)
+![](//res.cloudinary.com/larry/image/upload/v1469545948/android_arduino_5_khsarl.png)
 
 主要原理：
 蓝牙接收模块将Android发送的命令通过串口传给Arduino，Arduino对命令解析，发送相应的指令到电机驱动模块。在红外避障模式下，Arduino时刻检测红外模块的4个输出值，一旦某个值有变化（遇到障碍物），则发送相应的指令给电机驱动模块。
@@ -52,7 +52,7 @@ Arduino主循环中读取串口的字节，每八个字节组成一条指令，�
 svn://larry-wang.com/android/remote\_car(guest/guset)，包含Android和Arduino代码。
 
 最后贴下成品图：
-![](https://res.cloudinary.com/larry/image/upload/q_40/v1469545962/android_arduino_car_y7icxz.png)
+![](//res.cloudinary.com/larry/image/upload/q_40/v1469545962/android_arduino_car_y7icxz.png)
 
 **注：**
 - 避障模式的转弯逻辑有待改进，探测到前方有障碍物时，目前的逻辑是拐弯，直到前方没有障碍。但由于每方只有一个红外探头，且探测的距离有限，会导致小车只拐弯45度左右，此时还是不能前进的。可以在小车拐弯时，加一个主循环的次数，保证小车拐弯90度了再前进。
