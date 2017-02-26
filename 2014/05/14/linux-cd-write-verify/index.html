@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Linux下CD盘的刻录以及验证 | Larry Wang | Life on fingers...</title>
+  <meta name="author" content="Larry Wang">
+  
+  <meta name="description" content="在Linux下刻录了一张系统CD盘，记录过程：系统：Fedora 19
+下载完iso文件后先用md5sum验证12[larry@Larry-Fedora19 ~]$ md5sum debian-7.5.0-amd64-lxde-CD-1.iso b7f0b3c860f845768fbc7d2d8c9">
+  
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="Linux下CD盘的刻录以及验证"/>
+  <meta property="og:site_name" content="Larry Wang"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="//res.cloudinary.com/larry/image/upload/v1480855896/lw_a7iczu.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Larry Wang" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div id="page" class="site">
+  <div id="primary" class="content-area">
+
+    <header id="header" class="inner"><div class="site-branding">
+  <h1 class="site-title">
+    <a href="/">Larry Wang</a>
+  </h1>
+  <p class="site-description">Life on fingers...</p>
+</div>
+<nav id="site-navigation" class="main-navigation" role="navigation">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+  </ul>
+</nav></header>
+
+    <main id="main" class="site-main posts-loop" role="main">
+      <article class="post article">
+
+  
+  
+    <h3 class="article-title"><span>Linux下CD盘的刻录以及验证</span></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/05/14/linux-cd-write-verify/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-05-14T15:11:19.000Z">
+          2014-05-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>在Linux下刻录了一张系统CD盘，记录过程：<br>系统：Fedora 19</p>
+<p>下载完iso文件后先用md5sum验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[larry@Larry-Fedora19 ~]$ md5sum debian-7.5.0-amd64-lxde-CD-1.iso </div><div class="line">b7f0b3c860f845768fbc7d2d8c923ad8  debian-7.5.0-amd64-lxde-CD-1.iso</div></pre></td></tr></table></figure></p>
+<p>使用wodim烧录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div></pre></td><td class="code"><pre><div class="line">[larry@Larry-Fedora19 ~]$ wodim -v dev=/dev/cdrom debian-7.5.0-amd64-lxde-CD-1.iso </div><div class="line">wodim: No write mode specified.</div><div class="line">wodim: Assuming -tao mode.</div><div class="line">wodim: Future versions of wodim may have different drive dependent defaults.</div><div class="line">TOC Type: 1 = CD-ROM</div><div class="line">wodim: Operation not permitted. Warning: Cannot raise RLIMIT_MEMLOCK limits.</div><div class="line">scsidev: &apos;/dev/cdrom&apos;</div><div class="line">devname: &apos;/dev/cdrom&apos;</div><div class="line">scsibus: -2 target: -2 lun: -2</div><div class="line">Linux sg driver version: 3.5.27</div><div class="line">Wodim version: 1.1.11</div><div class="line">SCSI buffer size: 64512</div><div class="line">Device type    : Removable CD-ROM</div><div class="line">Version        : 5</div><div class="line">Response Format: 2</div><div class="line">Capabilities   : </div><div class="line">Vendor_info    : &apos;ASUS    &apos;</div><div class="line">Identification : &apos;DRW-24D3ST      &apos;</div><div class="line">Revision       : &apos;1.01&apos;</div><div class="line">Device seems to be: Generic mmc2 DVD-R/DVD-RW.</div><div class="line">Current: 0x0009 (CD-R)</div><div class="line">Profile: 0x0015 (DVD-R/DL sequential recording) </div><div class="line">Profile: 0x0016 (DVD-R/DL layer jump recording) </div><div class="line">Profile: 0x0018 (Reserved/Unknown) </div><div class="line">Profile: 0x002B (DVD+R/DL) </div><div class="line">Profile: 0x001B (DVD+R) </div><div class="line">Profile: 0x001A (DVD+RW) </div><div class="line">Profile: 0x0014 (DVD-RW sequential recording) </div><div class="line">Profile: 0x0013 (DVD-RW restricted overwrite) </div><div class="line">Profile: 0x0012 (DVD-RAM) </div><div class="line">Profile: 0x0011 (DVD-R sequential recording) </div><div class="line">Profile: 0x0010 (DVD-ROM) </div><div class="line">Profile: 0x000A (CD-RW) </div><div class="line">Profile: 0x0009 (CD-R) (current)</div><div class="line">Profile: 0x0008 (CD-ROM) </div><div class="line">Profile: 0x0002 (Removable disk) </div><div class="line">Using generic SCSI-3/mmc   CD-R/CD-RW driver (mmc_cdr).</div><div class="line">Driver flags   : MMC-3 SWABAUDIO BURNFREE </div><div class="line">Supported modes: TAO PACKET SAO SAO/R96P SAO/R96R RAW/R16 RAW/R96P RAW/R96R</div><div class="line">Drive buf size : 618464 = 603 KB</div><div class="line">Beginning DMA speed test. Set CDR_NODMATEST environment variable if device</div><div class="line">communication breaks or freezes immediately after that.</div><div class="line">FIFO size      : 4194304 = 4096 KB</div><div class="line">Track 01: data   648 MB        </div><div class="line">Total size:      744 MB (73:43.70) = 331778 sectors</div><div class="line">Lout start:      744 MB (73:45/53) = 331778 sectors</div><div class="line">Current Secsize: 2048</div><div class="line">ATIP info from disk:</div><div class="line">  Indicated writing power: 4</div><div class="line">  Is not unrestricted</div><div class="line">  Is not erasable</div><div class="line">  Disk sub type: Medium Type A, low Beta category (A-) (2)</div><div class="line">  ATIP start of lead in:  -12508 (97:15/17)</div><div class="line">  ATIP start of lead out: 359845 (79:59/70)</div><div class="line">Disk type:    Short strategy type (Phthalocyanine or similar)</div><div class="line">Manuf. index: 22</div><div class="line">Manufacturer: Ritek Co.</div><div class="line">Blocks total: 359845 Blocks current: 359845 Blocks remaining: 28067</div><div class="line">Speed set to 8467 KB/s</div><div class="line">Starting to write CD/DVD at speed  48.0 in real TAO mode for single session.</div><div class="line">Last chance to quit, starting real write in    0 seconds. Operation starts.</div><div class="line">Waiting for reader process to fill input buffer ... input buffer ready.</div><div class="line">Performing OPC...</div><div class="line">Starting new track at sector: 0</div><div class="line">Track 01:  648 of  648 MB written (fifo 100%) [buf  99%]  47.2x.</div><div class="line">Track 01: Total bytes read/written: 679477248/679477248 (331776 sectors).</div><div class="line">Writing  time:  146.557s</div><div class="line">Average write speed  32.7x.</div><div class="line">Min drive buffer fill was 97%</div><div class="line">Fixating...</div><div class="line">Fixating time:   11.459s</div><div class="line">BURN-Free was never needed.</div><div class="line">wodim: fifo had 10703 puts and 10703 gets.</div><div class="line">wodim: fifo was 0 times empty and 6442 times full, min fill was 92%.</div><div class="line">[larry@Larry-Fedora19 ~]$</div></pre></td></tr></table></figure></p>
+<p>将光盘中的内容复制出来进行验证（强迫症）<br>本打算用dd复制，但总是失败，结果如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">[larry@Larry-Fedora19 ~]$ dd if=/dev/cdrom of=temp.iso</div><div class="line">4+0 records in</div><div class="line">4+0 records out</div><div class="line">2048 bytes (2.0 kB) copied, 1.35707 s, 1.5 kB/s</div><div class="line">[larry@Larry-Fedora19 ~]$&lt;/pre&gt;</div><div class="line">使用readcd复制</div><div class="line">&lt;pre&gt;[larry@Larry-Fedora19 ~]$ umount /dev/cdrom</div><div class="line">[larry@Larry-Fedora19 ~]$ readcd -v dev=/dev/cdrom -f temp.iso</div><div class="line">scsidev: &apos;/dev/cdrom&apos;</div><div class="line">devname: &apos;/dev/cdrom&apos;</div><div class="line">scsibus: -2 target: -2 lun: -2</div><div class="line">Linux sg driver version: 3.5.27</div><div class="line">Read  speed:  8467 kB/s (CD  48x, DVD  6x).</div><div class="line">Write speed:  8467 kB/s (CD  48x, DVD  6x).</div><div class="line">Capacity: 331778 Blocks = 663556 kBytes = 648 MBytes = 679 prMB</div><div class="line">Sectorsize: 2048 Bytes</div><div class="line">Copy from SCSI (2,0,0) disk to file &apos;temp.iso&apos;</div><div class="line">end:    331778</div><div class="line">Errno: 5 (Input/output error), read_g1 scsi sendcmd: no error</div><div class="line">CDB:  28 00 00 05 10 00 00 00 02 00</div><div class="line">status: 0x2 (CHECK CONDITION)</div><div class="line">Sense Bytes: 70 00 05 00 00 00 00 0A 00 00 00 00 26 00 00 00</div><div class="line">Sense Key: 0x5 Illegal Request, Segment 0</div><div class="line">Sense Code: 0x26 Qual 0x00 (invalid field in parameter list) Fru 0x0</div><div class="line">Sense flags: Blk 0 (not valid) </div><div class="line">cmd finished after 0.128s timeout 40s</div><div class="line">readcd: Input/output error. Cannot read source disk</div><div class="line">readcd: Retrying from sector 331776.</div><div class="line">.~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~</div><div class="line">readcd: Input/output error. Error on sector 331776 not corrected. Total of 1 errors.</div><div class="line">Errno: 5 (Input/output error), read_g1 scsi sendcmd: no error</div><div class="line">CDB:  28 00 00 05 10 00 00 00 01 00</div><div class="line">status: 0x2 (CHECK CONDITION)</div><div class="line">Sense Bytes: 70 00 05 00 00 00 00 0A 00 00 00 00 26 00 00 00</div><div class="line">Sense Key: 0x5 Illegal Request, Segment 0</div><div class="line">Sense Code: 0x26 Qual 0x00 (invalid field in parameter list) Fru 0x0</div><div class="line">Sense flags: Blk 0 (not valid) </div><div class="line">cmd finished after 1.475s timeout 40s</div><div class="line"></div><div class="line">Time total: 375.180sec</div><div class="line">Read 663552.00 kB at 1768.6 kB/sec.</div><div class="line">Max corected retry count was 0 (limited to 128).</div><div class="line">The following 1 sector(s) could not be read correctly:</div><div class="line">331776</div><div class="line">[larry@Larry-Fedora19 ~]$</div></pre></td></tr></table></figure></p>
+<p>这里便卡壳了，第331776个扇区读不出来，以为是CD盘的问题，重新刻录了一张，结果还是一样。后来猜想是不是331776已经到结尾了，于是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[larry@Larry-Fedora19 ~]$ md5sum temp.iso </div><div class="line">b7f0b3c860f845768fbc7d2d8c923ad8  temp.iso</div></pre></td></tr></table></figure></p>
+<p>嘿嘿，跟第一步一模一样的:D，浪费一张CD。</p>
+<p><strong>注：</strong></p>
+<ul>
+<li>将光盘弹出再插入之后，dd命令生效<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[larry@Larry-Fedora19 ~]$ dd if=/dev/cdrom of=temp2.iso</div><div class="line">dd: error reading ‘/dev/cdrom’: Input/output error</div><div class="line">1327104+0 records in</div><div class="line">1327104+0 records out</div><div class="line">679477248 bytes (679 MB) copied, 146.774 s, 4.6 MB/s</div><div class="line">[larry@Larry-Fedora19 ~]$ md5sum temp2.iso </div><div class="line">b7f0b3c860f845768fbc7d2d8c923ad8  temp2.iso</div></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Linux/">Linux</a>
+  </span>
+
+
+          
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+  
+	<section id="comments" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'larry-wang';
+    var disqus_config = function() {
+        this.page.url = '2014/05/14/linux-cd-write-verify/';
+    };
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+
+    </main>
+
+    <footer id="colophon" class="site-footer" role="contentinfo"><p class="site-info">
+  Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+  Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+  </br>
+  
+  &copy; 2017 Larry Wang
+  
+</p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>基于Raspberry Pi的AVR开发环境搭建以及一个简单走马灯的实现 | Larry Wang | Life on fingers...</title>
+  <meta name="author" content="Larry Wang">
+  
+  <meta name="description" content="想学avr，又担心把主板烧坏，于是入手一块Raspberry Pi用来专门烧写，很久之前的事了，今天才有空实现了出来。
+
+Raspberry Pi的系统，我烧的官方的Raspbian “wheezy”， 本打算使用Arch Linux ARM的，不料无法启动，于是放弃了。
+Raspberry Pi初">
+  
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="基于Raspberry Pi的AVR开发环境搭建以及一个简单走马灯的实现"/>
+  <meta property="og:site_name" content="Larry Wang"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="//res.cloudinary.com/larry/image/upload/v1480855896/lw_a7iczu.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Larry Wang" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div id="page" class="site">
+  <div id="primary" class="content-area">
+
+    <header id="header" class="inner"><div class="site-branding">
+  <h1 class="site-title">
+    <a href="/">Larry Wang</a>
+  </h1>
+  <p class="site-description">Life on fingers...</p>
+</div>
+<nav id="site-navigation" class="main-navigation" role="navigation">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+  </ul>
+</nav></header>
+
+    <main id="main" class="site-main posts-loop" role="main">
+      <article class="post article">
+
+  
+  
+    <h3 class="article-title"><span>基于Raspberry Pi的AVR开发环境搭建以及一个简单走马灯的实现</span></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/05/16/avr-raspberrypi/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-05-16T14:34:22.000Z">
+          2013-05-16
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>想学avr，又担心把主板烧坏，于是入手一块Raspberry Pi用来专门烧写，很久之前的事了，今天才有空实现了出来。</p>
+<ol>
+<li>Raspberry Pi的系统，我烧的官方的Raspbian “wheezy”， 本打算使用Arch Linux ARM的，不料无法启动，于是放弃了。</li>
+<li>Raspberry Pi初次开机的设置，大家都懂的，别忘了开启ssh服务。</li>
+<li><p>Raspberry Pi的网络：我淘宝了块usb的无线网卡，这样可以使它更自由些。说下配置方法：<br> 备份/etc/network/interfaces并修改，我的文件内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">pi@raspberrypi /etc/network $ cat interfaces</div><div class="line">auto lo</div><div class="line"></div><div class="line">iface lo inet loopback</div><div class="line">iface eth0 inet dhcp</div><div class="line"></div><div class="line">allow-hotplug wlan0</div><div class="line">iface wlan0 inet static</div><div class="line">wpa-ssid &quot;MIMI&quot;</div><div class="line">wpa-psk &quot;xiaoyanyan&quot;</div><div class="line">address 192.168.2.11</div><div class="line">netmask 255.255.255.0</div><div class="line">gateway 192.168.2.1</div><div class="line">network 192.168.2.1</div></pre></td></tr></table></figure>
+<p> 你需要改下wpa-ssid/wifi名字 和wpa-psk/wifi密码。如果不想设置静态ip，则把static改成dhcp，下面的address, netmask, gateway和network就不需要了。<br>之后重启网络服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo /etc/init.d/networking restart</div></pre></td></tr></table></figure>
+</li>
+<li><p>网络设置好了，可以拔掉显示器键盘等外设，用ssh操作了。为了习惯，可以安装一些vim之类的常用软件。接下来安装avr的开发环境：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install avrdude gcc-avr gdb-avr avr-libc binutils-avr</div></pre></td></tr></table></figure>
+</li>
+<li><p>nfs的挂载<br> 我的想法是用Raspberry Pi编译和烧写avr，代码并不放在Raspberry Pi上。于是要在你的开发机上搭建nfs服务器，可以参考我的另一篇文章<br><a href="/2013/05/10/linux-mac-windows-nfs-samba/" title="Linux Mac Windows之间的文件共享（NFS &amp; Samba）">Linux Mac Windows之间的文件共享（NFS &amp; Samba）</a><br>我在/bin下创建了一个权限为755的mount_nfs文件，内容为“mount 192.168.2.10:/home/larry/workspace/avr /home/pi/avr”，然后在/etc/rc.local文件加入了“mount_nfs”。这样每次启动Raspberry Pi的时候就会自动挂载nfs，即使你的nfs服务器是在Raspberry Pi之后启动的，那么只要在Raspberry Pi执行sudo mount_nfs就可以了。</p>
+</li>
+<li><p>Raspberry Pi里没有ll命令，这可能会有些不习惯，于是我创建了文件~/bin/ll，修改权限为755，内容为“ls -l $@”，然后在～/.bashrc文件最后加一行“export $PATH:$HOME/bin”。或者直接在.bashrc里定义alias ll=’ls -l’，这样便可以随意使用ll命令了。</p>
+</li>
+<li><p>至此Raspberry Pi的环境已经搭载完成了，接下来写一个简单的走马灯程序。main.c：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">#include &lt;avr/io.h&gt;</div><div class="line">#include &lt;util/delay.h&gt;</div><div class="line">int main()</div><div class="line">&#123;</div><div class="line">    DDRB = 0xff;</div><div class="line">    int j, i;</div><div class="line">    while(1)</div><div class="line">    &#123;</div><div class="line">        for(j = 0; j &lt; 3; j++)</div><div class="line">        &#123;</div><div class="line">            PORTB = 0x01;</div><div class="line">            for(i = 0; i &lt; 8; i++)</div><div class="line">            &#123;</div><div class="line">                _delay_ms(20);</div><div class="line">                PORTB = PORTB &lt;&lt; 1;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        for(j = 0; j &lt; 3; j++)</div><div class="line">        &#123;</div><div class="line">            PORTB = 0x00;</div><div class="line">            _delay_ms(20);</div><div class="line">            PORTB = 0xff;</div><div class="line">            _delay_ms(20);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> 程序很简单，在PORTB的8个口上各串联一个二极管和电阻，二极管的阴级接地。应该会看到二极管会轮流闪3轮然后一起闪3轮，然后重复。<br>然后创建一个makefile（参照<a href="http://chou.it/2013/03/set-up-avr-on-linux/" title="第一个AVR程序，在linux下搭建avr的开发环境" target="_blank" rel="external">第一个AVR程序，在linux下搭建avr的开发环境</a>）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">MCU=atmega16a</div><div class="line">F_CPU=12000000</div><div class="line">SRC=main.c</div><div class="line">OUT=main</div><div class="line">HEX_FLASH=$(OUT).hex</div><div class="line"></div><div class="line">$(HEX_FLASH): $(OUT)</div><div class="line">        avr-objcopy -O ihex -R .eeprom -R .fuse -R .lock -R .signature $(OUT) $(HEX_FLASH)</div><div class="line"></div><div class="line">$(OUT) : main.o</div><div class="line">        avr-gcc -mmcu=$(MCU) -o $(OUT) *.o</div><div class="line">main.o: $(SRC)</div><div class="line">        avr-gcc -DF_CPU=$(F_CPU) -funsigned-char -funsigned-bitfields -Os -fpack-struct -fshort-enums -g2 -c -std=gnu99 -mmcu=$(MCU) $(SRC)</div><div class="line"></div><div class="line">clean:</div><div class="line">        rm -f *.o $(HEX_FLASH) $(OUT)</div><div class="line"></div><div class="line">burn: $(HEX_FLASH)</div><div class="line">        avrdude -p m16 -c usbasp -e -U flash:w:$(HEX_FLASH)</div></pre></td></tr></table></figure>
+<p> 连接好下载器以及开发板之后，make，make burn就将程序烧制单片机上了，可以检验二极管的效果。</p>
+</li>
+<li><p>焊接万用板，如果你愿意的话。第一次使用烙铁，焊得很丑：<br><img src="//res.cloudinary.com/larry/image/upload/c_scale,w_300/a_180/v1469583825/avr_raspberrypi_1_qqn0a6.jpg" alt=""> <img src="//res.cloudinary.com/larry/image/upload/c_scale,h_300/a_90/v1469547293/avr_raspberrypi_2_cwbanf.jpg" alt=""></p>
+</li>
+</ol>
+<p>附上一张全家福（Raspberry Pi， avr最小板， 我焊的走马灯）：<br><img src="//res.cloudinary.com/larry/image/upload/q_40/v1469583102/avr_raspberrypi_3_i4hp9k.jpg" alt=""></p>
+<p>记录下遇到的一些问题：</p>
+<ul>
+<li>Raspberry Pi无论烧入什么系统都无法正常启动：换了一张sd卡得到解决，虽然ARM的系统还是不能开机，但是至少debain的可以了。</li>
+<li>当Raspberry Pi的无线网卡工作后，接入Raspberry Pi的键盘无效：换了一个电源适配器得到解决，原来的是买小音响送的，估计电流不足。</li>
+<li>无法烧录代码到avr，说usbasp找不到：原来贪便宜，买的avr下载器不是通用的，只能使用于特一烧录软件，重新买了个下载器，问题得到解决。</li>
+<li>开始用面包版测试走马灯的时候，有几个口不亮，以为IO口坏了，原来那几个IO口默认已被他用，需要设置。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/AVR/">AVR</a>, <a href="/categories/AVR/Linux/">Linux</a>
+  </span>
+
+
+          
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+  
+	<section id="comments" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'larry-wang';
+    var disqus_config = function() {
+        this.page.url = '2013/05/16/avr-raspberrypi/';
+    };
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+
+    </main>
+
+    <footer id="colophon" class="site-footer" role="contentinfo"><p class="site-info">
+  Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+  Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+  </br>
+  
+  &copy; 2017 Larry Wang
+  
+</p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>关于Android中OnTouchListener多点触摸的初探 | Larry Wang | Life on fingers...</title>
+  <meta name="author" content="Larry Wang">
+  
+  <meta name="description" content="最近项目中涉及到Android的多点触摸，借此机会研究了一下，在此纪录，以备忘。测试机器：Moto Milestone2测试系统： Android2.2首先，一般情况下，界面上的不同View是不可以一起按的。在某个View的按住状态下，其他View无法按下去。可能是有实现的办法我没找到，若有知晓，不">
+  
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="关于Android中OnTouchListener多点触摸的初探"/>
+  <meta property="og:site_name" content="Larry Wang"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="//res.cloudinary.com/larry/image/upload/v1480855896/lw_a7iczu.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Larry Wang" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div id="page" class="site">
+  <div id="primary" class="content-area">
+
+    <header id="header" class="inner"><div class="site-branding">
+  <h1 class="site-title">
+    <a href="/">Larry Wang</a>
+  </h1>
+  <p class="site-description">Life on fingers...</p>
+</div>
+<nav id="site-navigation" class="main-navigation" role="navigation">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+  </ul>
+</nav></header>
+
+    <main id="main" class="site-main posts-loop" role="main">
+      <article class="post article">
+
+  
+  
+    <h3 class="article-title"><span>关于Android中OnTouchListener多点触摸的初探</span></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2015/01/08/android-ontouchlistener/" rel="bookmark">
+        <time class="entry-date published" datetime="2015-01-08T09:07:31.000Z">
+          2015-01-08
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>最近项目中涉及到Android的多点触摸，借此机会研究了一下，在此纪录，以备忘。<br>测试机器：Moto Milestone2<br>测试系统： Android2.2<br>首先，一般情况下，界面上的不同View是不可以一起按的。在某个View的按住状态下，其他View无法按下去。可能是有实现的办法我没找到，若有知晓，不令赐教。<br>下面说说在同一个View下触摸的情况。<br>MotionEvent类中有几个静态常量：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">MotionEvent.ACTION_DOWN //0x0</div><div class="line">MotionEvent.ACTION_POINTER_DOWN //0x5</div><div class="line">MotionEvent.ACTION_POINTER_1_DOWN //0x5</div><div class="line">MotionEvent.ACTION_POINTER_2_DOWN //0x105</div><div class="line">MotionEvent.ACTION_POINTER_3_DOWN //0x205</div><div class="line">MotionEvent.ACTION_MOVE //0x2</div><div class="line">MotionEvent.ACTION_UP //0x1</div><div class="line">MotionEvent.ACTION_POINTER_UP //0x6</div><div class="line">MotionEvent.ACTION_POINTER_1_UP //0x6</div><div class="line">MotionEvent.ACTION_POINTER_2_UP //0x106</div><div class="line">MotionEvent.ACTION_POINTER_3_UP //0x206</div><div class="line">MotionEvent.ACTION_POINTER_ID_MASK //0xff00</div></pre></td></tr></table></figure></p>
+<p>以下是多点测试结果：</p>
+<ul>
+<li>第一个手指按下时，e.getAction() == 0x0，e.getPointerCount() == 1，触发ACTION_DOWN；</li>
+<li>此时第二个手指按下，e.getAction() == 0x105，e.getPointerCount() == 2，触发ACTION_POINTER_2_DOWN;</li>
+<li>松开第二个手指，e.getAction() == 0x106，e.getPointerCount() == 2，触发ACTION_POINTER_2_UP；</li>
+<li>松开第一个手指，e.getAction() == 0x1，e.getPointerCount() == 1，触发ACTION_UP；</li>
+</ul>
+<p>倘若最后2部循序颠倒：</p>
+<ul>
+<li>先松开第一个手指，e.getAction() == 0x6，e.getPointerCount() == 2，触发ACTION_POINTER_1_UP；</li>
+<li>松开第二个手指，e.getAction() == 0x1，e.getPointerCount() == 1，触发ACTION_UP；</li>
+</ul>
+<p>根据以上的测试结果，可通过<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">e.getAction() == MotionEvent.ACTION_DOWN || (e.getAction() &amp; 0xff) == MotionEvent.ACTION_POINTER_DOWN</div></pre></td></tr></table></figure></p>
+<p>来判断是按下操作，通过<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">(e.getAction() &amp; MotionEvent.ACTION_POINTER_ID_MASK) &gt;&gt; 8</div></pre></td></tr></table></figure></p>
+<p>来获取此次按下的pointerId，再通过e.getX(pointerId)和e.getY(pointerId)来获取此次按下的手机的坐标。<br>ACTION_UP同理。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Android/">Android</a>
+  </span>
+
+
+          
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+  
+	<section id="comments" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'larry-wang';
+    var disqus_config = function() {
+        this.page.url = '2015/01/08/android-ontouchlistener/';
+    };
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+
+    </main>
+
+    <footer id="colophon" class="site-footer" role="contentinfo"><p class="site-info">
+  Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+  Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+  </br>
+  
+  &copy; 2017 Larry Wang
+  
+</p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

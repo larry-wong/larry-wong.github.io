@@ -1,0 +1,176 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>基于AVR和Android的蓝牙遥控小车 | Larry Wang | Life on fingers...</title>
+  <meta name="author" content="Larry Wang">
+  
+  <meta name="description" content="上一篇基于Arduino制作的小车比较入门，只需像积木那样把模块拼起来，然而，它却开启了我的嵌入式之门。继那之后，又实现了一款基于AVR的蓝牙小车。也是去年的事了，现在才记录。
+与上一篇基于Arduino和Android的蓝牙遥控小车对比：
+
+舍弃昂贵的Arduino，采用性价比更高的AVR ATm">
+  
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="基于AVR和Android的蓝牙遥控小车"/>
+  <meta property="og:site_name" content="Larry Wang"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="//res.cloudinary.com/larry/image/upload/v1480855896/lw_a7iczu.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Larry Wang" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div id="page" class="site">
+  <div id="primary" class="content-area">
+
+    <header id="header" class="inner"><div class="site-branding">
+  <h1 class="site-title">
+    <a href="/">Larry Wang</a>
+  </h1>
+  <p class="site-description">Life on fingers...</p>
+</div>
+<nav id="site-navigation" class="main-navigation" role="navigation">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+  </ul>
+</nav></header>
+
+    <main id="main" class="site-main posts-loop" role="main">
+      <article class="post article">
+
+  
+  
+    <h3 class="article-title"><span>基于AVR和Android的蓝牙遥控小车</span></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/05/12/android-avr-bluetooth-car/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-05-12T02:45:52.000Z">
+          2014-05-12
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>上一篇基于Arduino制作的小车比较入门，只需像积木那样把模块拼起来，然而，它却开启了我的嵌入式之门。继那之后，又实现了一款基于AVR的蓝牙小车。也是去年的事了，现在才记录。</p>
+<p>与上一篇<a href="/2014/05/03/android-arduino-bluetooth-car/" title="基于Arduino和Android的蓝牙遥控小车">基于Arduino和Android的蓝牙遥控小车</a>对比：</p>
+<ul>
+<li>舍弃昂贵的Arduino，采用性价比更高的AVR ATmega16A做MCU。</li>
+<li>舍弃昂贵的电机驱动板，使用桥式电路代替。</li>
+<li>舍弃比较鸡肋的红外避障功能。</li>
+<li>保留原有的蓝牙接收模块。</li>
+<li>改进Android的用于界面：端增加蓝牙设备扫描选择界面以及操作杆轨道等。</li>
+</ul>
+<p>小车电路图（图中电阻均为102欧姆，NPN均为D882，PNP均为B772）：<br><img src="//res.cloudinary.com/larry/image/upload/v1469544916/android_avr_gbiyvs.png" alt=""></p>
+<p>小车原理：</p>
+<blockquote>
+<p>通过2组桥式电路分别控制驱动电机和转向电机。AVR的PB0-PB3控制驱动电机，PB4-PB7控制转向电机。三极管起开关作用。</p>
+<p>假设与PBx连接的三极管为Sx，即PB0连接的为S0, PB1连接的为S1,……</p>
+<p>当PB0，PB1输出低电平，PB2,PB3输出高电平时：<br>S0为NPN，根据NPN型三极管的特性，基极为低电平时不导通，同理，S1不导通。<br>S2为PNP，根据PNP型三极管的特性，基极为高电平时不导通，同理，S3不导通。<br>此时，电机M处于断路状态，小车静止。</p>
+<p>当PB0,PB3输入高电平，PB1,PB2输入低电平时：<br>S0导通，S1不导通，S2导通，S3不导通，电机正转。</p>
+<p>当PB0,PB3输入低电平，PB1,PB2输入高电平时：<br>S0不导通，S1导通，S2不导通，S3导通，电机反转。</p>
+<p>转向电机同理。</p>
+</blockquote>
+<p>AVR部分代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">void init(void) &#123;</div><div class="line">    DDRB = 0xff; //初始化PB0-PB7为输出</div><div class="line"></div><div class="line">    UBRRL = 51; //根据出厂默认时钟频率为1MHz，设置UBRR以使串口USART波特率为2400bps（与蓝牙接收模块一致）</div><div class="line">    UCSRB = (1 &lt;&lt; RXEN) | (1 &lt;&lt; TXEN); //初始化USART的接收使能和发送使能</div><div class="line">    UCSRC = (1 &lt;&lt; URSEL) | (3 &lt;&lt; UCSZ0); //设置帧长度为8位</div><div class="line">    reset();</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">    init();</div><div class="line">    while(1) &#123;</div><div class="line">	while(!(UCSRA &amp;amp; (1 &lt;&lt; RXC))); //监测缓冲器有未读的数据</div><div class="line">	execute_command(UDR);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Android端的代码不贴了，贴几张界面截图：<br><img src="//res.cloudinary.com/larry/image/upload/c_scale,w_280/v1469545396/android_avr_ui_1_zfrtl2.png" alt="">    <span style="display: inline-block;"> <img src="//res.cloudinary.com/larry/image/upload/c_scale,w_420/v1469545398/android_avr_ui_2_q3cojt.png" alt=""><br><br><img src="//res.cloudinary.com/larry/image/upload/c_scale,w_420/v1469545412/android_avr_ui_3_uldty8.png" alt=""></span><br>Android端实现的功能比较多，一开始设计时有PWM变速、蜂鸣器、刹车、LED灯、激光射线、重力感应以及一个RGB三通道均可PWM调色的变色灯。<br>这部分设计的Android和AVR代码均已完成，但在焊万用板时出现问题，故只做了一个最简单的版本（前进，后退，左转，右转，停止），如有兴趣，参考svn:<br>svn://larry-wang.com/android/remote_car_v2 (guest/guest)</p>
+<p>最后贴下成品图：<br><img src="//res.cloudinary.com/larry/image/upload/q_40/v1469545431/android_avr_ui_car_yhy6xr.jpg" alt=""></p>
+<p><strong>注：</strong></p>
+<ul>
+<li>桥式电路中，每个三极管应并一个二极管防止倒流，这里偷懒没有使用。</li>
+<li>AVR与蓝牙接收模块共电源，两个电机共电源，两个电源共地。</li>
+<li>svn中car_v1为简单版本的avr代码，car_v2为复杂版本的avr代码，部分复杂版本Android代码被注释。</li>
+<li>电路图通过kicad绘制。</li>
+<li>Android界面通过Screenshot Easy截取。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Android/">Android</a>, <a href="/categories/Android/AVR/">AVR</a>
+  </span>
+
+
+          
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+  
+	<section id="comments" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'larry-wang';
+    var disqus_config = function() {
+        this.page.url = '2014/05/12/android-avr-bluetooth-car/';
+    };
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+
+    </main>
+
+    <footer id="colophon" class="site-footer" role="contentinfo"><p class="site-info">
+  Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+  Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+  </br>
+  
+  &copy; 2017 Larry Wang
+  
+</p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

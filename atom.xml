@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Larry Wang</title>
+  <subtitle>Life on fingers...</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://larry-wang.com/"/>
+  <updated>2017-02-26T09:24:03.792Z</updated>
+  <id>http://larry-wang.com/</id>
+  
+  <author>
+    <name>Larry Wang</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>IE的那些坑</title>
+    <link href="http://larry-wang.com/2015/02/25/ie/"/>
+    <id>http://larry-wang.com/2015/02/25/ie/</id>
+    <published>2015-02-25T07:41:35.000Z</published>
+    <updated>2017-02-26T09:24:03.792Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;由于产品需求从IE7开始支持，前段时间花了不少精力填坑，还是备忘一下。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 元素的float属性无效&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;发现版本：IE7&lt;/li&gt;
+&lt;li&gt;解决方案：将html中具有float属性的元素写在前面。&lt;/
+    
+    </summary>
+    
+      <category term="Web" scheme="http://larry-wang.com/categories/Web/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>关于Android中OnTouchListener多点触摸的初探</title>
+    <link href="http://larry-wang.com/2015/01/08/android-ontouchlistener/"/>
+    <id>http://larry-wang.com/2015/01/08/android-ontouchlistener/</id>
+    <published>2015-01-08T09:07:31.000Z</published>
+    <updated>2017-02-26T09:24:03.789Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近项目中涉及到Android的多点触摸，借此机会研究了一下，在此纪录，以备忘。&lt;br&gt;测试机器：Moto Milestone2&lt;br&gt;测试系统： Android2.2&lt;br&gt;首先，一般情况下，界面上的不同View是不可以一起按的。在某个View的按住状态下，其他View无
+    
+    </summary>
+    
+      <category term="Android" scheme="http://larry-wang.com/categories/Android/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>CentOS下基于pptp的VPN服务搭建</title>
+    <link href="http://larry-wang.com/2014/12/26/centos-vpn-pptp/"/>
+    <id>http://larry-wang.com/2014/12/26/centos-vpn-pptp/</id>
+    <published>2014-12-26T05:42:06.000Z</published>
+    <updated>2017-02-26T09:24:03.792Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;有幸成功搭建了VPN服务，纪录过程以备忘。&lt;/p&gt;
+&lt;p&gt;服务器版本：CentOS release 6.5（Final）&lt;br&gt;内核版本：Linux 2.6.32-431.1.2.0.1.el6.x86_64&lt;br&gt;VPS服务商：Digital Ocean&lt;/p&gt;
+&lt;p&gt;搭
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://larry-wang.com/categories/Linux/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux下CD盘的刻录以及验证</title>
+    <link href="http://larry-wang.com/2014/05/14/linux-cd-write-verify/"/>
+    <id>http://larry-wang.com/2014/05/14/linux-cd-write-verify/</id>
+    <published>2014-05-14T15:11:19.000Z</published>
+    <updated>2017-02-26T09:24:03.792Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在Linux下刻录了一张系统CD盘，记录过程：&lt;br&gt;系统：Fedora 19&lt;/p&gt;
+&lt;p&gt;下载完iso文件后先用md5sum验证&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://larry-wang.com/categories/Linux/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>基于AVR和Android的蓝牙遥控小车</title>
+    <link href="http://larry-wang.com/2014/05/12/android-avr-bluetooth-car/"/>
+    <id>http://larry-wang.com/2014/05/12/android-avr-bluetooth-car/</id>
+    <published>2014-05-12T02:45:52.000Z</published>
+    <updated>2017-02-26T09:24:03.789Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;上一篇基于Arduino制作的小车比较入门，只需像积木那样把模块拼起来，然而，它却开启了我的嵌入式之门。继那之后，又实现了一款基于AVR的蓝牙小车。也是去年的事了，现在才记录。&lt;/p&gt;
+&lt;p&gt;与上一篇&lt;a href=&quot;/2014/05/03/android-arduino-
+    
+    </summary>
+    
+      <category term="Android" scheme="http://larry-wang.com/categories/Android/"/>
+    
+      <category term="AVR" scheme="http://larry-wang.com/categories/Android/AVR/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>基于Arduino和Android的蓝牙遥控小车</title>
+    <link href="http://larry-wang.com/2014/05/03/android-arduino-bluetooth-car/"/>
+    <id>http://larry-wang.com/2014/05/03/android-arduino-bluetooth-car/</id>
+    <published>2014-05-03T13:24:18.000Z</published>
+    <updated>2017-02-26T09:24:03.789Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;《007-明日帝国》里的那辆酷车，着实让人心潮澎湃，一直想做一辆手机遥控的小车，直到发现Arduino，梦想得以实现。2年多之前的事了，今天回味一下。&lt;br&gt;Android做上位机，通过蓝牙给Arduino发送控制指令，实现的功能有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Androi
+    
+    </summary>
+    
+      <category term="Android" scheme="http://larry-wang.com/categories/Android/"/>
+    
+      <category term="Arduino" scheme="http://larry-wang.com/categories/Android/Arduino/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>安装Fedora 19之后的一些折腾</title>
+    <link href="http://larry-wang.com/2013/07/12/fedora19/"/>
+    <id>http://larry-wang.com/2013/07/12/fedora19/</id>
+    <published>2013-07-12T07:52:33.000Z</published>
+    <updated>2017-02-26T09:24:03.792Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;由于系统崩溃，安装了fedora19, 记点笔记，备忘。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. compat drivers&lt;/strong&gt;&lt;br&gt;新板子上的网卡fedora默认不能识别，先弄个usb的网卡插着，把compact drivers装好：&lt;br&gt;&lt;figure 
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://larry-wang.com/categories/Linux/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Fedora18 USB摄像头驱动（UVC）</title>
+    <link href="http://larry-wang.com/2013/05/26/fedora18-uvc/"/>
+    <id>http://larry-wang.com/2013/05/26/fedora18-uvc/</id>
+    <published>2013-05-26T05:29:18.000Z</published>
+    <updated>2017-02-26T09:24:03.792Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近入了一块蓝色妖姬的摄像头，内置麦，连上fedora18(LXDE)后两者都不工作。记录一下配置过程。&lt;br&gt;麦克风比较简单，直接上图：&lt;br&gt;&lt;img src=&quot;//res.cloudinary.com/larry/image/upload/v1469546452/fe
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://larry-wang.com/categories/Linux/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>基于Raspberry Pi的AVR开发环境搭建以及一个简单走马灯的实现</title>
+    <link href="http://larry-wang.com/2013/05/16/avr-raspberrypi/"/>
+    <id>http://larry-wang.com/2013/05/16/avr-raspberrypi/</id>
+    <published>2013-05-16T14:34:22.000Z</published>
+    <updated>2017-02-26T09:24:03.792Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;想学avr，又担心把主板烧坏，于是入手一块Raspberry Pi用来专门烧写，很久之前的事了，今天才有空实现了出来。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Raspberry Pi的系统，我烧的官方的Raspbian “wheezy”， 本打算使用Arch Linux ARM的，不料
+    
+    </summary>
+    
+      <category term="AVR" scheme="http://larry-wang.com/categories/AVR/"/>
+    
+      <category term="Linux" scheme="http://larry-wang.com/categories/AVR/Linux/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux Mac Windows之间的文件共享（NFS &amp; Samba）</title>
+    <link href="http://larry-wang.com/2013/05/10/linux-mac-windows-nfs-samba/"/>
+    <id>http://larry-wang.com/2013/05/10/linux-mac-windows-nfs-samba/</id>
+    <published>2013-05-10T14:33:11.000Z</published>
+    <updated>2017-02-26T09:24:03.792Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前段时间在Fedora18上搭载了NFS服务器，今天有空记录下。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 在fedora18上安装NFS服务器&lt;/strong&gt;&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;g
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://larry-wang.com/categories/Linux/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>基于Android的网络唤醒</title>
+    <link href="http://larry-wang.com/2013/01/16/wol-android/"/>
+    <id>http://larry-wang.com/2013/01/16/wol-android/</id>
+    <published>2013-01-16T15:12:41.000Z</published>
+    <updated>2017-02-26T09:24:03.792Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;所谓网络唤醒（Wake On Lan），即通过给网卡发送魔术包（Magic Package）来实现远程开机。此功能需要主板和网卡的支持，在BIOS可以查看并开启此功能。&lt;/p&gt;
+&lt;p&gt;第一次看到此项技术的时候，心里很兴奋，因为我一直在想着用手机远程打开家里的电脑，然后远程登
+    
+    </summary>
+    
+      <category term="Android" scheme="http://larry-wang.com/categories/Android/"/>
+    
+    
+  </entry>
+  
+</feed>

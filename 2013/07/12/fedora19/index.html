@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>安装Fedora 19之后的一些折腾 | Larry Wang | Life on fingers...</title>
+  <meta name="author" content="Larry Wang">
+  
+  <meta name="description" content="由于系统崩溃，安装了fedora19, 记点笔记，备忘。
+1. compat drivers新板子上的网卡fedora默认不能识别，先弄个usb的网卡插着，把compact drivers装好：12[larry@Larry-Fedora19 ~]$ cat /proc/version Linux v">
+  
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="安装Fedora 19之后的一些折腾"/>
+  <meta property="og:site_name" content="Larry Wang"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="//res.cloudinary.com/larry/image/upload/v1480855896/lw_a7iczu.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Larry Wang" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div id="page" class="site">
+  <div id="primary" class="content-area">
+
+    <header id="header" class="inner"><div class="site-branding">
+  <h1 class="site-title">
+    <a href="/">Larry Wang</a>
+  </h1>
+  <p class="site-description">Life on fingers...</p>
+</div>
+<nav id="site-navigation" class="main-navigation" role="navigation">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+  </ul>
+</nav></header>
+
+    <main id="main" class="site-main posts-loop" role="main">
+      <article class="post article">
+
+  
+  
+    <h3 class="article-title"><span>安装Fedora 19之后的一些折腾</span></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/07/12/fedora19/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-07-12T07:52:33.000Z">
+          2013-07-12
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>由于系统崩溃，安装了fedora19, 记点笔记，备忘。</p>
+<p><strong>1. compat drivers</strong><br>新板子上的网卡fedora默认不能识别，先弄个usb的网卡插着，把compact drivers装好：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[larry@Larry-Fedora19 ~]$ cat /proc/version </div><div class="line">Linux version 3.9.9-301.fc19.x86_64 (mockbuild@bkernel02) (gcc version 4.8.1 20130603 (Red Hat 4.8.1-1) (GCC) ) #1 SMP Thu Jul 4 15:10:36 UTC 2013</div></pre></td></tr></table></figure></p>
+<p>得到内核版本是3.9.9，从 <a href="http://drvbp1.linux-foundation.org/~mcgrof/rel-html/backports/" target="_blank" rel="external">http://drvbp1.linux-foundation.org/~mcgrof/rel-html/backports/</a> 下载对应自己内核的版本。<br>安装依赖：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install kernel-headers.x86_64 gcc</div></pre></td></tr></table></figure></p>
+<p>解压compat drivers并cd进入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">make</div><div class="line">make install</div></pre></td></tr></table></figure></p>
+<p>它会自动修改grub，并添加一项名字带有“with compat-drivers”的默认启动项。而这个启动项我无法启动，修改/boot/grub2/grub.cfg，将之前的启动项设为默认即可（进去也带有网卡驱动）。<br>整个过程折腾了许久，希望fedora早日集成此驱动。</p>
+<p><strong>2. 添加163和sohu的源</strong><br><a href="http://mirrors.163.com/" target="_blank" rel="external">http://mirrors.163.com/</a><br><a href="http://mirrors.sohu.com/" target="_blank" rel="external">http://mirrors.sohu.com/</a></p>
+<p><strong>3. fcitx</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install fcitx.x86_64 fcitx-pinyin.x86_64</div></pre></td></tr></table></figure></p>
+<p>刚开始安装的 fcitx-cloudpinyin.x86_64，不起作用！</p>
+<p><strong>4. sudo chkconfig iptables off 依然无效，还是需要：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">sudo touch /etc/rc.d/rc.local</div><div class="line">sudo chmod 755 /etc/rc.d/rc.local</div><div class="line"></div><div class="line">[larry@localhost etc]$ cat /etc/rc.d/rc.local </div><div class="line">#! /bin/bash</div><div class="line">service iptables start</div><div class="line">service iptables stop</div><div class="line"></div><div class="line">sudo systemctl start rc-local.service</div></pre></td></tr></table></figure></p>
+<p><strong>5. 安装nfs之后sudo systemctl enable nfs-server.service无效，但sudo systemctl start nfs-server.service有效</strong><br>在/etc/rc.d/rc.local中添加“systemctl start nfs-server.service”</p>
+<p><strong>6. Gnome还是不习惯，返回LXDE</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install @lxde-desktop</div></pre></td></tr></table></figure></p>
+<p><strong>7. 蓝牙小图标</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install blueman</div></pre></td></tr></table></figure></p>
+<p><strong>8. Eclipse快捷方式</strong><br>新建vim /usr/share/applications/eclipse.desktop，内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[Desktop Entry]</div><div class="line">Name=Eclipse</div><div class="line">Comment=Eclipse</div><div class="line">Exec=/opt/eclipse/eclipse</div><div class="line">Icon=/opt/eclipse/icon.xpm</div><div class="line">Terminal=false</div><div class="line">Type=Application</div><div class="line">Categories=Application;Development;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Linux/">Linux</a>
+  </span>
+
+
+          
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+  
+	<section id="comments" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'larry-wang';
+    var disqus_config = function() {
+        this.page.url = '2013/07/12/fedora19/';
+    };
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+
+    </main>
+
+    <footer id="colophon" class="site-footer" role="contentinfo"><p class="site-info">
+  Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+  Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+  </br>
+  
+  &copy; 2017 Larry Wang
+  
+</p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

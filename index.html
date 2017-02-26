@@ -1,0 +1,906 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Larry Wang | Life on fingers...</title>
+  <meta name="author" content="Larry Wang">
+  
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+  <meta property="og:site_name" content="Larry Wang"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="//res.cloudinary.com/larry/image/upload/v1480855896/lw_a7iczu.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Larry Wang" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div id="page" class="site">
+  <div id="primary" class="content-area">
+
+    <header id="header" class="inner"><div class="site-branding">
+  <h1 class="site-title">
+    <a href="/">Larry Wang</a>
+  </h1>
+  <p class="site-description">Life on fingers...</p>
+</div>
+<nav id="site-navigation" class="main-navigation" role="navigation">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+  </ul>
+</nav></header>
+
+    <main id="main" class="site-main posts-loop" role="main">
+      
+  <article class="post article">
+
+  
+  
+    <h3 class="article-title"><a href="/2015/02/25/ie/"><span>IE的那些坑</span></a></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2015/02/25/ie/" rel="bookmark">
+        <time class="entry-date published" datetime="2015-02-25T07:41:35.000Z">
+          2015-02-25
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>由于产品需求从IE7开始支持，前段时间花了不少精力填坑，还是备忘一下。</p>
+<p><strong>1. 元素的float属性无效</strong></p>
+<ul>
+<li>发现版本：IE7</li>
+<li>解决方案：将html中具有float属性的元素写在前面。</li>
+</ul>
+<p><strong>2. innerText赋值空格时无效</strong></p>
+<ul>
+<li>发现版本：所有IE</li>
+<li>解决方案：未发现，可以用innerHTML勉强解决。</li>
+</ul>
+<p><strong>3. 元素的attributes和property属性混在一起</strong></p>
+<ul>
+<li>发现版本：IE7</li>
+<li>解决方案：可以使用attr.specified区分，但有特例：给input设置了value时specified属性仍为false（貌似option的value也是如此）。</li>
+</ul>
+<p><strong>4. doucument.createElement创建input后，无法修改name属性</strong></p>
+<ul>
+<li>发现版本：IE7</li>
+<li>解决方案：使用document.createElement(&lt;input name=’xxx’/&gt;)代替。</li>
+</ul>
+<p><strong>5. &lt;input type=’checkbox’ checked=’checked’&gt;, JS获取的attributes里’CHECKED’的值为‘true’</strong></p>
+<ul>
+<li>发现版本：IE7</li>
+<li>解决方案：就用true做比较呗。</li>
+</ul>
+<p><strong>6. &lt;input type=’checkbox’/&gt;调用setAttribute(‘CHECKED’, true/’checked’)无效</strong></p>
+<ul>
+<li>发现版本：IE7</li>
+<li>解决方案：使用obj.checked=true代替，且必须在obj已经放到DOM中才生效，否则报JS异常。</li>
+</ul>
+<p><strong>7. 据说在设置height属性后，超出的部分会溢出，但是实际中没有超过设定的height也溢出了，例如height:100%</strong></p>
+<ul>
+<li>发现版本：IE7</li>
+<li>解决方案：将height属性修改为min-height:100%;</li>
+</ul>
+<p><strong>8. 继上一个问题，div的height:100%，在父元素没设置height属性时无效，例如父元素设置{position:fixed;top:100px;right:0;bottom:0;left:0}时，子元素设置height:100%无效</strong></p>
+<ul>
+<li>发现版本：IE7</li>
+<li>解决方案：给子元素设置*position:absoulte;</li>
+</ul>
+<p><strong>9. 继上一个问题，如果父元素设置了position:absolute，子元素(实际为间接子元素)在设置margin属性时，有margin-right无效的现象</strong></p>
+<ul>
+<li>发现版本：IE7</li>
+<li>解决方案：设置父元素left:0;top:0;right:0;bottom:0;</li>
+</ul>
+<p><strong>10. z-index必须设置在同级元素才生效，子元素里的z-index再大都不生效</strong></p>
+<ul>
+<li>发现版本：IE7</li>
+<li>解决方案：给同级元素设置: position:relative;z-index:xxx;</li>
+</ul>
+<p><strong>11. 设置position:relavive之后的一个怪异现象：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;div id=’div1’&gt; //relative</div><div class="line">    &lt;div id=’div2’&gt;</div><div class="line">        &lt;div id=’div3’&gt;&lt;/div&gt;</div><div class="line">        &lt;div id =’div4’&gt;&lt;/div&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">    &lt;div id=’div5’&gt;&lt;/div&gt; //absolute</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>div1为relative，div5为absolute相对div1进行定位。当给div3设置position:relative后，div5离奇消失</p>
+<ul>
+<li>发现版本：IE7</li>
+<li>解决方案：网上搜索说可能对html代码顺序有关，将div5移至div2之前，问题解决。</li>
+</ul>
+<p><strong>12. img元素最好设置height，不然会变形</strong></p>
+<ul>
+<li>发现版本：IE10</li>
+<li>解决方案：未发现。</li>
+</ul>
+<p><strong>13. input的placeholder属性不支持</strong></p>
+<ul>
+<li>发现版本：IE9</li>
+<li>解决方案：模拟。</li>
+</ul>
+<p><strong>14. block元素的display属性设置为inline-block时无效</strong></p>
+<ul>
+<li>发现版本：IE7</li>
+<li>解决方案：先使用display:inline-block属性触发块元素，然后再定义display:inline，让块元素呈递为内联对象（两个display 要先后放在两个CSS声明中才有效果，这是IE的一个经典bug，如果先定义了display:inline-block，然后再将display设回 inline或block，layout不会消失）。</li>
+</ul>
+<p><strong>15. console未定义，未打开调试模式时会报错</strong></p>
+<ul>
+<li>发现版本：IE8，高版本模拟IE8时不会出现</li>
+<li>解决方案：全局定义console。</li>
+</ul>
+<p><strong>16. for…in循环对数组无效</strong></p>
+<ul>
+<li>发现版本：IE8，高版本模拟IE8时不会出现</li>
+<li>解决方案：使用原始的for(var i = 0; i &lt; xx.length; i++)。</li>
+</ul>
+<p><strong>注：</strong></p>
+<ul>
+<li>文中的“发现版本”是我出现问题的版本，不排除其他版本也有此问题的可能。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Web/">Web</a>
+  </span>
+
+
+          
+        </div>
+        
+        <div class="article-meta pull-right">
+          <span>
+            <i class="icon-comments"></i>
+            <span>
+              <a href="http://larry-wang.com/2015/02/25/ie/#comment">评论</a>
+            </span>
+          </span>
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post article">
+
+  
+  
+    <h3 class="article-title"><a href="/2015/01/08/android-ontouchlistener/"><span>关于Android中OnTouchListener多点触摸的初探</span></a></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2015/01/08/android-ontouchlistener/" rel="bookmark">
+        <time class="entry-date published" datetime="2015-01-08T09:07:31.000Z">
+          2015-01-08
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>最近项目中涉及到Android的多点触摸，借此机会研究了一下，在此纪录，以备忘。<br>测试机器：Moto Milestone2<br>测试系统： Android2.2<br>首先，一般情况下，界面上的不同View是不可以一起按的。在某个View的按住状态下，其他View无法按下去。可能是有实现的办法我没找到，若有知晓，不令赐教。<br>下面说说在同一个View下触摸的情况。<br>MotionEvent类中有几个静态常量：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">MotionEvent.ACTION_DOWN //0x0</div><div class="line">MotionEvent.ACTION_POINTER_DOWN //0x5</div><div class="line">MotionEvent.ACTION_POINTER_1_DOWN //0x5</div><div class="line">MotionEvent.ACTION_POINTER_2_DOWN //0x105</div><div class="line">MotionEvent.ACTION_POINTER_3_DOWN //0x205</div><div class="line">MotionEvent.ACTION_MOVE //0x2</div><div class="line">MotionEvent.ACTION_UP //0x1</div><div class="line">MotionEvent.ACTION_POINTER_UP //0x6</div><div class="line">MotionEvent.ACTION_POINTER_1_UP //0x6</div><div class="line">MotionEvent.ACTION_POINTER_2_UP //0x106</div><div class="line">MotionEvent.ACTION_POINTER_3_UP //0x206</div><div class="line">MotionEvent.ACTION_POINTER_ID_MASK //0xff00</div></pre></td></tr></table></figure></p>
+<p>以下是多点测试结果：</p>
+<ul>
+<li>第一个手指按下时，e.getAction() == 0x0，e.getPointerCount() == 1，触发ACTION_DOWN；</li>
+<li>此时第二个手指按下，e.getAction() == 0x105，e.getPointerCount() == 2，触发ACTION_POINTER_2_DOWN;</li>
+<li>松开第二个手指，e.getAction() == 0x106，e.getPointerCount() == 2，触发ACTION_POINTER_2_UP；</li>
+<li>松开第一个手指，e.getAction() == 0x1，e.getPointerCount() == 1，触发ACTION_UP；</li>
+</ul>
+<p>倘若最后2部循序颠倒：</p>
+<ul>
+<li>先松开第一个手指，e.getAction() == 0x6，e.getPointerCount() == 2，触发ACTION_POINTER_1_UP；</li>
+<li>松开第二个手指，e.getAction() == 0x1，e.getPointerCount() == 1，触发ACTION_UP；</li>
+</ul>
+<p>根据以上的测试结果，可通过<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">e.getAction() == MotionEvent.ACTION_DOWN || (e.getAction() &amp; 0xff) == MotionEvent.ACTION_POINTER_DOWN</div></pre></td></tr></table></figure></p>
+<p>来判断是按下操作，通过<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">(e.getAction() &amp; MotionEvent.ACTION_POINTER_ID_MASK) &gt;&gt; 8</div></pre></td></tr></table></figure></p>
+<p>来获取此次按下的pointerId，再通过e.getX(pointerId)和e.getY(pointerId)来获取此次按下的手机的坐标。<br>ACTION_UP同理。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Android/">Android</a>
+  </span>
+
+
+          
+        </div>
+        
+        <div class="article-meta pull-right">
+          <span>
+            <i class="icon-comments"></i>
+            <span>
+              <a href="http://larry-wang.com/2015/01/08/android-ontouchlistener/#comment">评论</a>
+            </span>
+          </span>
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post article">
+
+  
+  
+    <h3 class="article-title"><a href="/2014/12/26/centos-vpn-pptp/"><span>CentOS下基于pptp的VPN服务搭建</span></a></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/12/26/centos-vpn-pptp/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-12-26T05:42:06.000Z">
+          2014-12-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>有幸成功搭建了VPN服务，纪录过程以备忘。</p>
+<p>服务器版本：CentOS release 6.5（Final）<br>内核版本：Linux 2.6.32-431.1.2.0.1.el6.x86_64<br>VPS服务商：Digital Ocean</p>
+<p>搭建步骤：</p>
+<p><strong>1. 确认内核已经加载MPPE模块</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo modprobe ppp-compress-18 &amp;&amp; echo OK</div></pre></td></tr></table></figure></p>
+<p>如果打印出来OK则表示已经加载MPPE模块。</p>
+<p><strong>2. 安装ppp和pptpd</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install ppp pptpd</div></pre></td></tr></table></figure></p>
+<p><strong>3. 备份即将修改的配置文件</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo cp /etc/ppp/options.pptpd&#123;,_back&#125;</div><div class="line">sudo cp /etc/pptpd.conf&#123;,_back&#125;</div><div class="line">sudo cp /etc/sysctl.conf&#123;,_back&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>4. 修改配置文件</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo vim /etc/ppp/options.pptpd</div></pre></td></tr></table></figure></p>
+<p>这个文件只改了dns为google的，开始没加，导致VPN连接成功之后不能访问网络，修改后的有效代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">name pptpd</div><div class="line">refuse-pap</div><div class="line">refuse-chap</div><div class="line">refuse-mschap</div><div class="line">require-mschap-v2</div><div class="line">require-mppe-128</div><div class="line">ms-dns 8.8.8.8</div><div class="line">ms-dns 8.8.4.4</div><div class="line">proxyarp</div><div class="line">lock</div><div class="line">nobsdcomp</div><div class="line">novj</div><div class="line">novjccomp</div><div class="line">nologfd</div></pre></td></tr></table></figure></p>
+<p>/etc/ppp/chap-secrets 是保存用户账号密码信息的，比较好理解<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yourusername    pptpd    yourpasswd1    *</div></pre></td></tr></table></figure></p>
+<p>/etc/pptpd.cofig 反注释下两行就OK<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">localip 192.168.0.1</div><div class="line">remoteip 192.168.0.234-238,192.168.2.245</div></pre></td></tr></table></figure></p>
+<p><strong>5. 打开内核IP转发功能</strong><br>修改 /etc/sysctl.conf, 其中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">net.ipv4.ip_forward = 0</div></pre></td></tr></table></figure></p>
+<p>修改为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">net.ipv4.ip_forward = 1</div></pre></td></tr></table></figure></p>
+<p>然后执行下列命令使之生效<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo sysctl -p</div></pre></td></tr></table></figure></p>
+<p><strong>6. 配置iptables</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">sudo iptables -A INPUT -p gre -j ACCEPT</div><div class="line">sudo iptables -A INPUT -p tcp -m tcp --dport 1723 -j ACCEPT</div><div class="line">sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT</div><div class="line">sudo iptables -A FORWARD -s 192.168.0.0/24 -o eth0 -j ACCEPT</div><div class="line">sudo iptables -A FORWARD -d 192.168.0.0/24 -i eth0 -j ACCEPT</div><div class="line">sudo iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o eth0 -j MASQUERADE</div><div class="line">sudo /etc/init.d/iptables save</div></pre></td></tr></table></figure></p>
+<p><strong>7. 启动pptpd服务</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo /etc/init.d/pptpd start</div><div class="line">sudo chkconfig pptpd on</div></pre></td></tr></table></figure></p>
+<p>至此，服务端搭建已经完成，MacOS已经可以成功连接了。</p>
+<p><strong>注：</strong></p>
+<ul>
+<li>第一次修改iptables之后没有重启pptpd，导致客户端无法连接。</li>
+<li>本文参考了<a href="http://www.cnblogs.com/sixiweb/archive/2012/11/20/2778732.html" title="Linux下搭建VPN服务器（CentOS、pptp）" target="_blank" rel="external">Linux下搭建VPN服务器（CentOS、pptp）</a>。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Linux/">Linux</a>
+  </span>
+
+
+          
+        </div>
+        
+        <div class="article-meta pull-right">
+          <span>
+            <i class="icon-comments"></i>
+            <span>
+              <a href="http://larry-wang.com/2014/12/26/centos-vpn-pptp/#comment">评论</a>
+            </span>
+          </span>
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post article">
+
+  
+  
+    <h3 class="article-title"><a href="/2014/05/14/linux-cd-write-verify/"><span>Linux下CD盘的刻录以及验证</span></a></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/05/14/linux-cd-write-verify/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-05-14T15:11:19.000Z">
+          2014-05-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>在Linux下刻录了一张系统CD盘，记录过程：<br>系统：Fedora 19</p>
+<p>下载完iso文件后先用md5sum验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[larry@Larry-Fedora19 ~]$ md5sum debian-7.5.0-amd64-lxde-CD-1.iso </div><div class="line">b7f0b3c860f845768fbc7d2d8c923ad8  debian-7.5.0-amd64-lxde-CD-1.iso</div></pre></td></tr></table></figure></p>
+<p>使用wodim烧录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div></pre></td><td class="code"><pre><div class="line">[larry@Larry-Fedora19 ~]$ wodim -v dev=/dev/cdrom debian-7.5.0-amd64-lxde-CD-1.iso </div><div class="line">wodim: No write mode specified.</div><div class="line">wodim: Assuming -tao mode.</div><div class="line">wodim: Future versions of wodim may have different drive dependent defaults.</div><div class="line">TOC Type: 1 = CD-ROM</div><div class="line">wodim: Operation not permitted. Warning: Cannot raise RLIMIT_MEMLOCK limits.</div><div class="line">scsidev: &apos;/dev/cdrom&apos;</div><div class="line">devname: &apos;/dev/cdrom&apos;</div><div class="line">scsibus: -2 target: -2 lun: -2</div><div class="line">Linux sg driver version: 3.5.27</div><div class="line">Wodim version: 1.1.11</div><div class="line">SCSI buffer size: 64512</div><div class="line">Device type    : Removable CD-ROM</div><div class="line">Version        : 5</div><div class="line">Response Format: 2</div><div class="line">Capabilities   : </div><div class="line">Vendor_info    : &apos;ASUS    &apos;</div><div class="line">Identification : &apos;DRW-24D3ST      &apos;</div><div class="line">Revision       : &apos;1.01&apos;</div><div class="line">Device seems to be: Generic mmc2 DVD-R/DVD-RW.</div><div class="line">Current: 0x0009 (CD-R)</div><div class="line">Profile: 0x0015 (DVD-R/DL sequential recording) </div><div class="line">Profile: 0x0016 (DVD-R/DL layer jump recording) </div><div class="line">Profile: 0x0018 (Reserved/Unknown) </div><div class="line">Profile: 0x002B (DVD+R/DL) </div><div class="line">Profile: 0x001B (DVD+R) </div><div class="line">Profile: 0x001A (DVD+RW) </div><div class="line">Profile: 0x0014 (DVD-RW sequential recording) </div><div class="line">Profile: 0x0013 (DVD-RW restricted overwrite) </div><div class="line">Profile: 0x0012 (DVD-RAM) </div><div class="line">Profile: 0x0011 (DVD-R sequential recording) </div><div class="line">Profile: 0x0010 (DVD-ROM) </div><div class="line">Profile: 0x000A (CD-RW) </div><div class="line">Profile: 0x0009 (CD-R) (current)</div><div class="line">Profile: 0x0008 (CD-ROM) </div><div class="line">Profile: 0x0002 (Removable disk) </div><div class="line">Using generic SCSI-3/mmc   CD-R/CD-RW driver (mmc_cdr).</div><div class="line">Driver flags   : MMC-3 SWABAUDIO BURNFREE </div><div class="line">Supported modes: TAO PACKET SAO SAO/R96P SAO/R96R RAW/R16 RAW/R96P RAW/R96R</div><div class="line">Drive buf size : 618464 = 603 KB</div><div class="line">Beginning DMA speed test. Set CDR_NODMATEST environment variable if device</div><div class="line">communication breaks or freezes immediately after that.</div><div class="line">FIFO size      : 4194304 = 4096 KB</div><div class="line">Track 01: data   648 MB        </div><div class="line">Total size:      744 MB (73:43.70) = 331778 sectors</div><div class="line">Lout start:      744 MB (73:45/53) = 331778 sectors</div><div class="line">Current Secsize: 2048</div><div class="line">ATIP info from disk:</div><div class="line">  Indicated writing power: 4</div><div class="line">  Is not unrestricted</div><div class="line">  Is not erasable</div><div class="line">  Disk sub type: Medium Type A, low Beta category (A-) (2)</div><div class="line">  ATIP start of lead in:  -12508 (97:15/17)</div><div class="line">  ATIP start of lead out: 359845 (79:59/70)</div><div class="line">Disk type:    Short strategy type (Phthalocyanine or similar)</div><div class="line">Manuf. index: 22</div><div class="line">Manufacturer: Ritek Co.</div><div class="line">Blocks total: 359845 Blocks current: 359845 Blocks remaining: 28067</div><div class="line">Speed set to 8467 KB/s</div><div class="line">Starting to write CD/DVD at speed  48.0 in real TAO mode for single session.</div><div class="line">Last chance to quit, starting real write in    0 seconds. Operation starts.</div><div class="line">Waiting for reader process to fill input buffer ... input buffer ready.</div><div class="line">Performing OPC...</div><div class="line">Starting new track at sector: 0</div><div class="line">Track 01:  648 of  648 MB written (fifo 100%) [buf  99%]  47.2x.</div><div class="line">Track 01: Total bytes read/written: 679477248/679477248 (331776 sectors).</div><div class="line">Writing  time:  146.557s</div><div class="line">Average write speed  32.7x.</div><div class="line">Min drive buffer fill was 97%</div><div class="line">Fixating...</div><div class="line">Fixating time:   11.459s</div><div class="line">BURN-Free was never needed.</div><div class="line">wodim: fifo had 10703 puts and 10703 gets.</div><div class="line">wodim: fifo was 0 times empty and 6442 times full, min fill was 92%.</div><div class="line">[larry@Larry-Fedora19 ~]$</div></pre></td></tr></table></figure></p>
+<p>将光盘中的内容复制出来进行验证（强迫症）<br>本打算用dd复制，但总是失败，结果如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">[larry@Larry-Fedora19 ~]$ dd if=/dev/cdrom of=temp.iso</div><div class="line">4+0 records in</div><div class="line">4+0 records out</div><div class="line">2048 bytes (2.0 kB) copied, 1.35707 s, 1.5 kB/s</div><div class="line">[larry@Larry-Fedora19 ~]$&lt;/pre&gt;</div><div class="line">使用readcd复制</div><div class="line">&lt;pre&gt;[larry@Larry-Fedora19 ~]$ umount /dev/cdrom</div><div class="line">[larry@Larry-Fedora19 ~]$ readcd -v dev=/dev/cdrom -f temp.iso</div><div class="line">scsidev: &apos;/dev/cdrom&apos;</div><div class="line">devname: &apos;/dev/cdrom&apos;</div><div class="line">scsibus: -2 target: -2 lun: -2</div><div class="line">Linux sg driver version: 3.5.27</div><div class="line">Read  speed:  8467 kB/s (CD  48x, DVD  6x).</div><div class="line">Write speed:  8467 kB/s (CD  48x, DVD  6x).</div><div class="line">Capacity: 331778 Blocks = 663556 kBytes = 648 MBytes = 679 prMB</div><div class="line">Sectorsize: 2048 Bytes</div><div class="line">Copy from SCSI (2,0,0) disk to file &apos;temp.iso&apos;</div><div class="line">end:    331778</div><div class="line">Errno: 5 (Input/output error), read_g1 scsi sendcmd: no error</div><div class="line">CDB:  28 00 00 05 10 00 00 00 02 00</div><div class="line">status: 0x2 (CHECK CONDITION)</div><div class="line">Sense Bytes: 70 00 05 00 00 00 00 0A 00 00 00 00 26 00 00 00</div><div class="line">Sense Key: 0x5 Illegal Request, Segment 0</div><div class="line">Sense Code: 0x26 Qual 0x00 (invalid field in parameter list) Fru 0x0</div><div class="line">Sense flags: Blk 0 (not valid) </div><div class="line">cmd finished after 0.128s timeout 40s</div><div class="line">readcd: Input/output error. Cannot read source disk</div><div class="line">readcd: Retrying from sector 331776.</div><div class="line">.~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~+~~~-~~~</div><div class="line">readcd: Input/output error. Error on sector 331776 not corrected. Total of 1 errors.</div><div class="line">Errno: 5 (Input/output error), read_g1 scsi sendcmd: no error</div><div class="line">CDB:  28 00 00 05 10 00 00 00 01 00</div><div class="line">status: 0x2 (CHECK CONDITION)</div><div class="line">Sense Bytes: 70 00 05 00 00 00 00 0A 00 00 00 00 26 00 00 00</div><div class="line">Sense Key: 0x5 Illegal Request, Segment 0</div><div class="line">Sense Code: 0x26 Qual 0x00 (invalid field in parameter list) Fru 0x0</div><div class="line">Sense flags: Blk 0 (not valid) </div><div class="line">cmd finished after 1.475s timeout 40s</div><div class="line"></div><div class="line">Time total: 375.180sec</div><div class="line">Read 663552.00 kB at 1768.6 kB/sec.</div><div class="line">Max corected retry count was 0 (limited to 128).</div><div class="line">The following 1 sector(s) could not be read correctly:</div><div class="line">331776</div><div class="line">[larry@Larry-Fedora19 ~]$</div></pre></td></tr></table></figure></p>
+<p>这里便卡壳了，第331776个扇区读不出来，以为是CD盘的问题，重新刻录了一张，结果还是一样。后来猜想是不是331776已经到结尾了，于是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[larry@Larry-Fedora19 ~]$ md5sum temp.iso </div><div class="line">b7f0b3c860f845768fbc7d2d8c923ad8  temp.iso</div></pre></td></tr></table></figure></p>
+<p>嘿嘿，跟第一步一模一样的:D，浪费一张CD。</p>
+<p><strong>注：</strong></p>
+<ul>
+<li>将光盘弹出再插入之后，dd命令生效<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[larry@Larry-Fedora19 ~]$ dd if=/dev/cdrom of=temp2.iso</div><div class="line">dd: error reading ‘/dev/cdrom’: Input/output error</div><div class="line">1327104+0 records in</div><div class="line">1327104+0 records out</div><div class="line">679477248 bytes (679 MB) copied, 146.774 s, 4.6 MB/s</div><div class="line">[larry@Larry-Fedora19 ~]$ md5sum temp2.iso </div><div class="line">b7f0b3c860f845768fbc7d2d8c923ad8  temp2.iso</div></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Linux/">Linux</a>
+  </span>
+
+
+          
+        </div>
+        
+        <div class="article-meta pull-right">
+          <span>
+            <i class="icon-comments"></i>
+            <span>
+              <a href="http://larry-wang.com/2014/05/14/linux-cd-write-verify/#comment">评论</a>
+            </span>
+          </span>
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post article">
+
+  
+  
+    <h3 class="article-title"><a href="/2014/05/12/android-avr-bluetooth-car/"><span>基于AVR和Android的蓝牙遥控小车</span></a></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/05/12/android-avr-bluetooth-car/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-05-12T02:45:52.000Z">
+          2014-05-12
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>上一篇基于Arduino制作的小车比较入门，只需像积木那样把模块拼起来，然而，它却开启了我的嵌入式之门。继那之后，又实现了一款基于AVR的蓝牙小车。也是去年的事了，现在才记录。</p>
+<p>与上一篇<a href="/2014/05/03/android-arduino-bluetooth-car/" title="基于Arduino和Android的蓝牙遥控小车">基于Arduino和Android的蓝牙遥控小车</a>对比：</p>
+<ul>
+<li>舍弃昂贵的Arduino，采用性价比更高的AVR ATmega16A做MCU。</li>
+<li>舍弃昂贵的电机驱动板，使用桥式电路代替。</li>
+<li>舍弃比较鸡肋的红外避障功能。</li>
+<li>保留原有的蓝牙接收模块。</li>
+<li>改进Android的用于界面：端增加蓝牙设备扫描选择界面以及操作杆轨道等。</li>
+</ul>
+<p>小车电路图（图中电阻均为102欧姆，NPN均为D882，PNP均为B772）：<br><img src="//res.cloudinary.com/larry/image/upload/v1469544916/android_avr_gbiyvs.png" alt=""></p>
+<p>小车原理：</p>
+<blockquote>
+<p>通过2组桥式电路分别控制驱动电机和转向电机。AVR的PB0-PB3控制驱动电机，PB4-PB7控制转向电机。三极管起开关作用。</p>
+<p>假设与PBx连接的三极管为Sx，即PB0连接的为S0, PB1连接的为S1,……</p>
+<p>当PB0，PB1输出低电平，PB2,PB3输出高电平时：<br>S0为NPN，根据NPN型三极管的特性，基极为低电平时不导通，同理，S1不导通。<br>S2为PNP，根据PNP型三极管的特性，基极为高电平时不导通，同理，S3不导通。<br>此时，电机M处于断路状态，小车静止。</p>
+<p>当PB0,PB3输入高电平，PB1,PB2输入低电平时：<br>S0导通，S1不导通，S2导通，S3不导通，电机正转。</p>
+<p>当PB0,PB3输入低电平，PB1,PB2输入高电平时：<br>S0不导通，S1导通，S2不导通，S3导通，电机反转。</p>
+<p>转向电机同理。</p>
+</blockquote>
+<p>AVR部分代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">void init(void) &#123;</div><div class="line">    DDRB = 0xff; //初始化PB0-PB7为输出</div><div class="line"></div><div class="line">    UBRRL = 51; //根据出厂默认时钟频率为1MHz，设置UBRR以使串口USART波特率为2400bps（与蓝牙接收模块一致）</div><div class="line">    UCSRB = (1 &lt;&lt; RXEN) | (1 &lt;&lt; TXEN); //初始化USART的接收使能和发送使能</div><div class="line">    UCSRC = (1 &lt;&lt; URSEL) | (3 &lt;&lt; UCSZ0); //设置帧长度为8位</div><div class="line">    reset();</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">    init();</div><div class="line">    while(1) &#123;</div><div class="line">	while(!(UCSRA &amp;amp; (1 &lt;&lt; RXC))); //监测缓冲器有未读的数据</div><div class="line">	execute_command(UDR);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Android端的代码不贴了，贴几张界面截图：<br><img src="//res.cloudinary.com/larry/image/upload/c_scale,w_280/v1469545396/android_avr_ui_1_zfrtl2.png" alt="">    <span style="display: inline-block;"> <img src="//res.cloudinary.com/larry/image/upload/c_scale,w_420/v1469545398/android_avr_ui_2_q3cojt.png" alt=""><br><br><img src="//res.cloudinary.com/larry/image/upload/c_scale,w_420/v1469545412/android_avr_ui_3_uldty8.png" alt=""></span><br>Android端实现的功能比较多，一开始设计时有PWM变速、蜂鸣器、刹车、LED灯、激光射线、重力感应以及一个RGB三通道均可PWM调色的变色灯。<br>这部分设计的Android和AVR代码均已完成，但在焊万用板时出现问题，故只做了一个最简单的版本（前进，后退，左转，右转，停止），如有兴趣，参考svn:<br>svn://larry-wang.com/android/remote_car_v2 (guest/guest)</p>
+<p>最后贴下成品图：<br><img src="//res.cloudinary.com/larry/image/upload/q_40/v1469545431/android_avr_ui_car_yhy6xr.jpg" alt=""></p>
+<p><strong>注：</strong></p>
+<ul>
+<li>桥式电路中，每个三极管应并一个二极管防止倒流，这里偷懒没有使用。</li>
+<li>AVR与蓝牙接收模块共电源，两个电机共电源，两个电源共地。</li>
+<li>svn中car_v1为简单版本的avr代码，car_v2为复杂版本的avr代码，部分复杂版本Android代码被注释。</li>
+<li>电路图通过kicad绘制。</li>
+<li>Android界面通过Screenshot Easy截取。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Android/">Android</a>, <a href="/categories/Android/AVR/">AVR</a>
+  </span>
+
+
+          
+        </div>
+        
+        <div class="article-meta pull-right">
+          <span>
+            <i class="icon-comments"></i>
+            <span>
+              <a href="http://larry-wang.com/2014/05/12/android-avr-bluetooth-car/#comment">评论</a>
+            </span>
+          </span>
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post article">
+
+  
+  
+    <h3 class="article-title"><a href="/2014/05/03/android-arduino-bluetooth-car/"><span>基于Arduino和Android的蓝牙遥控小车</span></a></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/05/03/android-arduino-bluetooth-car/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-05-03T13:24:18.000Z">
+          2014-05-03
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>《007-明日帝国》里的那辆酷车，着实让人心潮澎湃，一直想做一辆手机遥控的小车，直到发现Arduino，梦想得以实现。2年多之前的事了，今天回味一下。<br>Android做上位机，通过蓝牙给Arduino发送控制指令，实现的功能有：</p>
+<ul>
+<li>Android触摸控制。</li>
+<li>Android重力感应控制。</li>
+<li>小车自动驾驶（红外线避障碍）。</li>
+<li>小车左右轮通过PWM变速。</li>
+</ul>
+<p>操作流程：</p>
+<ul>
+<li>给小车通电（电机电源和Arduino电源独立）。</li>
+<li>确认Android的蓝牙已开启，并且与蓝牙接收模块匹过，打开Android客户端，等待蓝牙连接成功。</li>
+<li>默认是触控模式，界面上左边操作杆控制小车左轮，右边操作杆控制右轮。操作杆向前推，对应的轮子向前进，推动幅度越大，速度越快。同理，向后推，轮子向后转。</li>
+<li>点击屏幕上的重力感应开关，进入重力感应模式，手机水平放置时，小车静止。手机向任意角度倾斜，Android会计算出左右轮的方向与速度，发送给Arduino。</li>
+<li>点击屏幕上的自动驾驶开关，进入红外避障模式，此时小车不响应Android的任何指令（退出红外避障模式指令除外），通过红外避障模块的I/O口检测，Arduino自动控制小车前进、转向、后退以及停止。</li>
+</ul>
+<p>各个模块。<br>Arduino:<br><img src="//res.cloudinary.com/larry/image/upload/v1469545955/android_arduino_1_p4y3mr.png" alt=""><br>对于Arduino的介绍就不多说了，<a href="http://www.arduino.cc/" target="_blank" rel="external">官网</a>资料很详尽。</p>
+<p>蓝牙接收模块:<br><img src="//res.cloudinary.com/larry/image/upload/v1469545944/android_arduino_2_aourtz.png" alt=""><br>这里我只用到了VCC/GND供电以及RXD/TXD与Arduino进行串口通信。</p>
+<p>红外探测模块:<br><img src="//res.cloudinary.com/larry/image/upload/v1469545944/android_arduino_3_qy8rai.png" alt=""><br>此模块由一个主模块（左）和四个子模块（右）构成。每个子模块探测单个方向的障碍物情况，主模块通过4个I/O口与Arduino通信。</p>
+<p>电机驱动模块:<br><img src="//res.cloudinary.com/larry/image/upload/v1469545944/android_arduino_4_o1g8tf.png" alt=""><br>这是一款两路的电机驱动，用来控制小车左右两边的电机。EA和EB接Arduino的PWM口，控制电机转速，IA和IB接普通I/O口，控制电机转向。OUT_A和OUT_B分别接小车两边的电机。</p>
+<p>电路图：<br><img src="//res.cloudinary.com/larry/image/upload/v1469545948/android_arduino_5_khsarl.png" alt=""></p>
+<p>主要原理：<br>蓝牙接收模块将Android发送的命令通过串口传给Arduino，Arduino对命令解析，发送相应的指令到电机驱动模块。在红外避障模式下，Arduino时刻检测红外模块的4个输出值，一旦某个值有变化（遇到障碍物），则发送相应的指令给电机驱动模块。<br>定义好Android与Arduino之间通讯的数据格式为一个8位的数字。前2位分表表示左右两边电机的转向，中间3位和最后3位分别表示左右两边电机的转速（0～255）。此外定义2个特殊的命令：进入避障模式（99000001）和离开避障模式（99000002）。<br>触控模式下，Android通过屏幕上2个操作杆的位置决定以上四个值，重力感应模式下则有手机与水平面的倾斜角度（x，y）决定。<br>Arduino主循环中读取串口的字节，每八个字节组成一条指令，根据指令控制电机。</p>
+<p>具体代码就不贴了，了解原理，代码很简单。<br>svn://larry-wang.com/android/remote_car(guest/guset)，包含Android和Arduino代码。</p>
+<p>最后贴下成品图：<br><img src="//res.cloudinary.com/larry/image/upload/q_40/v1469545962/android_arduino_car_y7icxz.png" alt=""></p>
+<p><strong>注：</strong></p>
+<ul>
+<li>避障模式的转弯逻辑有待改进，探测到前方有障碍物时，目前的逻辑是拐弯，直到前方没有障碍。但由于每方只有一个红外探头，且探测的距离有限，会导致小车只拐弯45度左右，此时还是不能前进的。可以在小车拐弯时，加一个主循环的次数，保证小车拐弯90度了再前进。</li>
+<li>为防止干扰，Arduino和电机的电源是分开来的，2个电源一定要共地。</li>
+<li>电路图通过kicad绘制。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Android/">Android</a>, <a href="/categories/Android/Arduino/">Arduino</a>
+  </span>
+
+
+          
+        </div>
+        
+        <div class="article-meta pull-right">
+          <span>
+            <i class="icon-comments"></i>
+            <span>
+              <a href="http://larry-wang.com/2014/05/03/android-arduino-bluetooth-car/#comment">评论</a>
+            </span>
+          </span>
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post article">
+
+  
+  
+    <h3 class="article-title"><a href="/2013/07/12/fedora19/"><span>安装Fedora 19之后的一些折腾</span></a></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/07/12/fedora19/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-07-12T07:52:33.000Z">
+          2013-07-12
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>由于系统崩溃，安装了fedora19, 记点笔记，备忘。</p>
+<p><strong>1. compat drivers</strong><br>新板子上的网卡fedora默认不能识别，先弄个usb的网卡插着，把compact drivers装好：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[larry@Larry-Fedora19 ~]$ cat /proc/version </div><div class="line">Linux version 3.9.9-301.fc19.x86_64 (mockbuild@bkernel02) (gcc version 4.8.1 20130603 (Red Hat 4.8.1-1) (GCC) ) #1 SMP Thu Jul 4 15:10:36 UTC 2013</div></pre></td></tr></table></figure></p>
+<p>得到内核版本是3.9.9，从 <a href="http://drvbp1.linux-foundation.org/~mcgrof/rel-html/backports/" target="_blank" rel="external">http://drvbp1.linux-foundation.org/~mcgrof/rel-html/backports/</a> 下载对应自己内核的版本。<br>安装依赖：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install kernel-headers.x86_64 gcc</div></pre></td></tr></table></figure></p>
+<p>解压compat drivers并cd进入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">make</div><div class="line">make install</div></pre></td></tr></table></figure></p>
+<p>它会自动修改grub，并添加一项名字带有“with compat-drivers”的默认启动项。而这个启动项我无法启动，修改/boot/grub2/grub.cfg，将之前的启动项设为默认即可（进去也带有网卡驱动）。<br>整个过程折腾了许久，希望fedora早日集成此驱动。</p>
+<p><strong>2. 添加163和sohu的源</strong><br><a href="http://mirrors.163.com/" target="_blank" rel="external">http://mirrors.163.com/</a><br><a href="http://mirrors.sohu.com/" target="_blank" rel="external">http://mirrors.sohu.com/</a></p>
+<p><strong>3. fcitx</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install fcitx.x86_64 fcitx-pinyin.x86_64</div></pre></td></tr></table></figure></p>
+<p>刚开始安装的 fcitx-cloudpinyin.x86_64，不起作用！</p>
+<p><strong>4. sudo chkconfig iptables off 依然无效，还是需要：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">sudo touch /etc/rc.d/rc.local</div><div class="line">sudo chmod 755 /etc/rc.d/rc.local</div><div class="line"></div><div class="line">[larry@localhost etc]$ cat /etc/rc.d/rc.local </div><div class="line">#! /bin/bash</div><div class="line">service iptables start</div><div class="line">service iptables stop</div><div class="line"></div><div class="line">sudo systemctl start rc-local.service</div></pre></td></tr></table></figure></p>
+<p><strong>5. 安装nfs之后sudo systemctl enable nfs-server.service无效，但sudo systemctl start nfs-server.service有效</strong><br>在/etc/rc.d/rc.local中添加“systemctl start nfs-server.service”</p>
+<p><strong>6. Gnome还是不习惯，返回LXDE</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install @lxde-desktop</div></pre></td></tr></table></figure></p>
+<p><strong>7. 蓝牙小图标</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install blueman</div></pre></td></tr></table></figure></p>
+<p><strong>8. Eclipse快捷方式</strong><br>新建vim /usr/share/applications/eclipse.desktop，内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[Desktop Entry]</div><div class="line">Name=Eclipse</div><div class="line">Comment=Eclipse</div><div class="line">Exec=/opt/eclipse/eclipse</div><div class="line">Icon=/opt/eclipse/icon.xpm</div><div class="line">Terminal=false</div><div class="line">Type=Application</div><div class="line">Categories=Application;Development;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Linux/">Linux</a>
+  </span>
+
+
+          
+        </div>
+        
+        <div class="article-meta pull-right">
+          <span>
+            <i class="icon-comments"></i>
+            <span>
+              <a href="http://larry-wang.com/2013/07/12/fedora19/#comment">评论</a>
+            </span>
+          </span>
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post article">
+
+  
+  
+    <h3 class="article-title"><a href="/2013/05/26/fedora18-uvc/"><span>Fedora18 USB摄像头驱动（UVC）</span></a></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/05/26/fedora18-uvc/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-05-26T05:29:18.000Z">
+          2013-05-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>最近入了一块蓝色妖姬的摄像头，内置麦，连上fedora18(LXDE)后两者都不工作。记录一下配置过程。<br>麦克风比较简单，直接上图：<br><img src="//res.cloudinary.com/larry/image/upload/v1469546452/fedora18_uvc_rymmyl.png" alt=""><br>注意Buit-in Audio选的是Output而不是Duplex。</p>
+<p>视频部分安装UVC驱动：<br>lsusb找到你的摄像头的Device ID，如果包含在<a href="http://www.ideasonboard.org/uvc/" title="http://www.ideasonboard.org/uvc/" target="_blank" rel="external">http://www.ideasonboard.org/uvc/</a>的列表内，那么请继续。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">cd</div><div class="line">git clone --depth=1 git://linuxtv.org/media_build.git</div><div class="line">cd media_build </div><div class="line">./build</div><div class="line">sudo make install</div><div class="line">sudo reboot</div></pre></td></tr></table></figure></p>
+<p>./build的时候可能会提示你安装依赖，安装就是了，而且build的时间比较长，纵使3770k的核，也花了四五分钟。<br>重启后在cheese和skype中都能看到视频了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Linux/">Linux</a>
+  </span>
+
+
+          
+        </div>
+        
+        <div class="article-meta pull-right">
+          <span>
+            <i class="icon-comments"></i>
+            <span>
+              <a href="http://larry-wang.com/2013/05/26/fedora18-uvc/#comment">评论</a>
+            </span>
+          </span>
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post article">
+
+  
+  
+    <h3 class="article-title"><a href="/2013/05/16/avr-raspberrypi/"><span>基于Raspberry Pi的AVR开发环境搭建以及一个简单走马灯的实现</span></a></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/05/16/avr-raspberrypi/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-05-16T14:34:22.000Z">
+          2013-05-16
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>想学avr，又担心把主板烧坏，于是入手一块Raspberry Pi用来专门烧写，很久之前的事了，今天才有空实现了出来。</p>
+<ol>
+<li>Raspberry Pi的系统，我烧的官方的Raspbian “wheezy”， 本打算使用Arch Linux ARM的，不料无法启动，于是放弃了。</li>
+<li>Raspberry Pi初次开机的设置，大家都懂的，别忘了开启ssh服务。</li>
+<li><p>Raspberry Pi的网络：我淘宝了块usb的无线网卡，这样可以使它更自由些。说下配置方法：<br> 备份/etc/network/interfaces并修改，我的文件内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">pi@raspberrypi /etc/network $ cat interfaces</div><div class="line">auto lo</div><div class="line"></div><div class="line">iface lo inet loopback</div><div class="line">iface eth0 inet dhcp</div><div class="line"></div><div class="line">allow-hotplug wlan0</div><div class="line">iface wlan0 inet static</div><div class="line">wpa-ssid &quot;MIMI&quot;</div><div class="line">wpa-psk &quot;xiaoyanyan&quot;</div><div class="line">address 192.168.2.11</div><div class="line">netmask 255.255.255.0</div><div class="line">gateway 192.168.2.1</div><div class="line">network 192.168.2.1</div></pre></td></tr></table></figure>
+<p> 你需要改下wpa-ssid/wifi名字 和wpa-psk/wifi密码。如果不想设置静态ip，则把static改成dhcp，下面的address, netmask, gateway和network就不需要了。<br>之后重启网络服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo /etc/init.d/networking restart</div></pre></td></tr></table></figure>
+</li>
+<li><p>网络设置好了，可以拔掉显示器键盘等外设，用ssh操作了。为了习惯，可以安装一些vim之类的常用软件。接下来安装avr的开发环境：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install avrdude gcc-avr gdb-avr avr-libc binutils-avr</div></pre></td></tr></table></figure>
+</li>
+<li><p>nfs的挂载<br> 我的想法是用Raspberry Pi编译和烧写avr，代码并不放在Raspberry Pi上。于是要在你的开发机上搭建nfs服务器，可以参考我的另一篇文章<br><a href="/2013/05/10/linux-mac-windows-nfs-samba/" title="Linux Mac Windows之间的文件共享（NFS &amp; Samba）">Linux Mac Windows之间的文件共享（NFS &amp; Samba）</a><br>我在/bin下创建了一个权限为755的mount_nfs文件，内容为“mount 192.168.2.10:/home/larry/workspace/avr /home/pi/avr”，然后在/etc/rc.local文件加入了“mount_nfs”。这样每次启动Raspberry Pi的时候就会自动挂载nfs，即使你的nfs服务器是在Raspberry Pi之后启动的，那么只要在Raspberry Pi执行sudo mount_nfs就可以了。</p>
+</li>
+<li><p>Raspberry Pi里没有ll命令，这可能会有些不习惯，于是我创建了文件~/bin/ll，修改权限为755，内容为“ls -l $@”，然后在～/.bashrc文件最后加一行“export $PATH:$HOME/bin”。或者直接在.bashrc里定义alias ll=’ls -l’，这样便可以随意使用ll命令了。</p>
+</li>
+<li><p>至此Raspberry Pi的环境已经搭载完成了，接下来写一个简单的走马灯程序。main.c：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">#include &lt;avr/io.h&gt;</div><div class="line">#include &lt;util/delay.h&gt;</div><div class="line">int main()</div><div class="line">&#123;</div><div class="line">    DDRB = 0xff;</div><div class="line">    int j, i;</div><div class="line">    while(1)</div><div class="line">    &#123;</div><div class="line">        for(j = 0; j &lt; 3; j++)</div><div class="line">        &#123;</div><div class="line">            PORTB = 0x01;</div><div class="line">            for(i = 0; i &lt; 8; i++)</div><div class="line">            &#123;</div><div class="line">                _delay_ms(20);</div><div class="line">                PORTB = PORTB &lt;&lt; 1;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        for(j = 0; j &lt; 3; j++)</div><div class="line">        &#123;</div><div class="line">            PORTB = 0x00;</div><div class="line">            _delay_ms(20);</div><div class="line">            PORTB = 0xff;</div><div class="line">            _delay_ms(20);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> 程序很简单，在PORTB的8个口上各串联一个二极管和电阻，二极管的阴级接地。应该会看到二极管会轮流闪3轮然后一起闪3轮，然后重复。<br>然后创建一个makefile（参照<a href="http://chou.it/2013/03/set-up-avr-on-linux/" title="第一个AVR程序，在linux下搭建avr的开发环境" target="_blank" rel="external">第一个AVR程序，在linux下搭建avr的开发环境</a>）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">MCU=atmega16a</div><div class="line">F_CPU=12000000</div><div class="line">SRC=main.c</div><div class="line">OUT=main</div><div class="line">HEX_FLASH=$(OUT).hex</div><div class="line"></div><div class="line">$(HEX_FLASH): $(OUT)</div><div class="line">        avr-objcopy -O ihex -R .eeprom -R .fuse -R .lock -R .signature $(OUT) $(HEX_FLASH)</div><div class="line"></div><div class="line">$(OUT) : main.o</div><div class="line">        avr-gcc -mmcu=$(MCU) -o $(OUT) *.o</div><div class="line">main.o: $(SRC)</div><div class="line">        avr-gcc -DF_CPU=$(F_CPU) -funsigned-char -funsigned-bitfields -Os -fpack-struct -fshort-enums -g2 -c -std=gnu99 -mmcu=$(MCU) $(SRC)</div><div class="line"></div><div class="line">clean:</div><div class="line">        rm -f *.o $(HEX_FLASH) $(OUT)</div><div class="line"></div><div class="line">burn: $(HEX_FLASH)</div><div class="line">        avrdude -p m16 -c usbasp -e -U flash:w:$(HEX_FLASH)</div></pre></td></tr></table></figure>
+<p> 连接好下载器以及开发板之后，make，make burn就将程序烧制单片机上了，可以检验二极管的效果。</p>
+</li>
+<li><p>焊接万用板，如果你愿意的话。第一次使用烙铁，焊得很丑：<br><img src="//res.cloudinary.com/larry/image/upload/c_scale,w_300/a_180/v1469583825/avr_raspberrypi_1_qqn0a6.jpg" alt=""> <img src="//res.cloudinary.com/larry/image/upload/c_scale,h_300/a_90/v1469547293/avr_raspberrypi_2_cwbanf.jpg" alt=""></p>
+</li>
+</ol>
+<p>附上一张全家福（Raspberry Pi， avr最小板， 我焊的走马灯）：<br><img src="//res.cloudinary.com/larry/image/upload/q_40/v1469583102/avr_raspberrypi_3_i4hp9k.jpg" alt=""></p>
+<p>记录下遇到的一些问题：</p>
+<ul>
+<li>Raspberry Pi无论烧入什么系统都无法正常启动：换了一张sd卡得到解决，虽然ARM的系统还是不能开机，但是至少debain的可以了。</li>
+<li>当Raspberry Pi的无线网卡工作后，接入Raspberry Pi的键盘无效：换了一个电源适配器得到解决，原来的是买小音响送的，估计电流不足。</li>
+<li>无法烧录代码到avr，说usbasp找不到：原来贪便宜，买的avr下载器不是通用的，只能使用于特一烧录软件，重新买了个下载器，问题得到解决。</li>
+<li>开始用面包版测试走马灯的时候，有几个口不亮，以为IO口坏了，原来那几个IO口默认已被他用，需要设置。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/AVR/">AVR</a>, <a href="/categories/AVR/Linux/">Linux</a>
+  </span>
+
+
+          
+        </div>
+        
+        <div class="article-meta pull-right">
+          <span>
+            <i class="icon-comments"></i>
+            <span>
+              <a href="http://larry-wang.com/2013/05/16/avr-raspberrypi/#comment">评论</a>
+            </span>
+          </span>
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post article">
+
+  
+  
+    <h3 class="article-title"><a href="/2013/05/10/linux-mac-windows-nfs-samba/"><span>Linux Mac Windows之间的文件共享（NFS &amp; Samba）</span></a></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/05/10/linux-mac-windows-nfs-samba/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-05-10T14:33:11.000Z">
+          2013-05-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>前段时间在Fedora18上搭载了NFS服务器，今天有空记录下。</p>
+<p><strong>1. 在fedora18上安装NFS服务器</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install rpcbind nfs-utils</div></pre></td></tr></table></figure></p>
+<p><strong>2. 编辑/etc/exports文件，添加要共享的文件夹。我打算在局域网共享主目录/home/larry，故我的/etc/exports文件内容如下：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[larry@localhost etc]$ cat exports</div><div class="line">/home/larry 192.168.2.8(sync,rw,anonuid=1000,anongid=1000,all_squash,insecure) 192.168.2.*(sync,ro,anonuid=1000,anongid=1000,all_squash,insecure) 192.168.2.11(sync,rw,anonuid=1000,anongid=1000,all_squash,insecure)</div></pre></td></tr></table></figure></p>
+<p>稍稍解释下：<br>anonuid/anongid：设定当客户端为匿名登陆时的用户uid/gid。<br>all_squash：无论客户端是什么用户登陆都视为匿名用户（nobody/nfsnobody）。与anonuid/anongid连用意思就很明确了：无论客户端是谁，都被至为uid和gid都为1000的这个用户，也就是larry。因为/home/larry只有larry才有全部的权限。当然你可以把它权限改成777，只不过我不喜欢这么做。查看自己的uid/gid可以使用id命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[larry@localhost etc]$ id</div><div class="line">uid=1000(larry) gid=1000(larry) groups=1000(larry)</div></pre></td></tr></table></figure></p>
+<p>我仅对ip为8和11的机器开放了写的权限，其他机器只有读的权限。<br>insecure：每次连接时分配的端口号&gt;=1024，开始没加这个，导致Mac连接时报错。</p>
+<p><strong>3. 关闭iptables</strong><br>我的iptables好像有问题，怎么配都不行，索性关了算了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo chkconfig iptables off //永久</div><div class="line">sudo service iptables stop //即时</div></pre></td></tr></table></figure></p>
+<p>我的iptables问题还真大，关闭了都不起作用，即使重启也无效。但我意外发现只要执行“service iptables start”， “service iptables stop”就好了，真是怪异。<br>于是建立文件/etc/rc.d/rc.local，更改权限为755：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo touch /etc/rc.d/rc.local</div><div class="line">sudo chmod 755 /etc/rc.d/rc.local</div></pre></td></tr></table></figure></p>
+<p>写入内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[larry@localhost etc]$ cat /etc/rc.d/rc.local </div><div class="line">#! /bin/bash</div><div class="line">service iptables start</div><div class="line">service iptables stop</div></pre></td></tr></table></figure></p>
+<p>使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl status rc-local.service</div></pre></td></tr></table></figure></p>
+<p>检查rc-local的状态，如果没有active，则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl start rc-local.service</div></pre></td></tr></table></figure></p>
+<p><strong>4. 启动nfs服务</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo systemctl enable nfs-server.service //永久</div><div class="line">sudo systemctl start nfs-server.service //即时</div></pre></td></tr></table></figure></p>
+<p>至此，服务器部分算是搞定了。</p>
+<p><strong>5. Mac客户端</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mount_nfs 192.168.2.10:/home/larry xxx</div></pre></td></tr></table></figure></p>
+<p>就把服务器的/home/larry挂载到xxx目录了。</p>
+<p><strong>6. win7客户端</strong><br>win7自带了NFS客户端了，只是默认没有开启。控制面板 –&gt; 程序 –&gt; 打开或关闭Windows功能，勾上NFS服务，等进度条走完…<br>打开cmd，敲：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mount \\192.168.2.10\home\larry x:\</div></pre></td></tr></table></figure></p>
+<p>提示没有权限，猜想以上anonuid/anongid和all_squash对win7无效，于是修改注册表：HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\ClientForNFS\CurrentVersion\Default，添加两项：AnonymousUid，AnonymousGid，值都为3e8（16进制的1000）。怎么把1000转成16进制的？大神教我的方法，在浏览器的console里输入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var a=1000;</div><div class="line">a.toString(16)</div></pre></td></tr></table></figure></p>
+<p>它就会给你答案了…</p>
+<p><strong>7. 乱码</strong><br>在win7写入到fedora的文件名中文都是乱码，在fedora：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo yum install convmv</div><div class="line">convmv -f GBK -t UTF-8 --notest -r *</div></pre></td></tr></table></figure></p>
+<p>这样就会递归地把当前目录下的文件名转化过来，但是到win7下看又是乱码了，这里便搞不定了。</p>
+<p>最后我还是使用samba来专门对windows进行共享。</p>
+<p><strong>8. samba服务器的安装</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install samba</div></pre></td></tr></table></figure></p>
+<p><strong>9. 给samba添加用户并设置密码</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo smbpasswd -a larry</div></pre></td></tr></table></figure></p>
+<p>我是把我自己加入了samba的用户组，没有另外建用户。不过提示说smbpasswd找不到，原来要先：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install samba-client</div></pre></td></tr></table></figure></p>
+<p><strong>10. 备份并修改samba配置文件</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo cp /etc/samba/smb.conf /etc/samba/smb.conf_back</div></pre></td></tr></table></figure></p>
+<p>我把/etc/samba/smb.conf后面的[homes]和[printers]都删掉了，自己加入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[larry]</div><div class="line">comment = data</div><div class="line">path = /home/larry</div><div class="line">guest ok = no</div><div class="line">writable = yes</div><div class="line">valid users = @larry</div></pre></td></tr></table></figure></p>
+<p>字面意思很好理解，只允许larry用户访问，密码上面已经设置过了。</p>
+<p><strong>11. 关闭selinux</strong><br>备份/etc/sysconfig/selinux并修改其中SELINUX值为disabled，重启生效。</p>
+<p><strong>12. 启动samba</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo systemctl enable smb.service //永久</div><div class="line">sudo systemctl start smb.service //即时</div></pre></td></tr></table></figure></p>
+<p><strong>13. windows端</strong><br>win+R，输入\192.168.2.10，会提示输入用户名密码。</p>
+<p><strong>14. Mac端</strong><br>Finder -&gt; 前往 -&gt; 连接服务器，输入：smb://192.168.2.10，会提示输入用户名密码。</p>
+<p>至此，大功告成！在使用过程中发现，服务器上某些名字怪异的文件通过NFS共享到Mac上显示不出来，通过Samba则没有问题。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Linux/">Linux</a>
+  </span>
+
+
+          
+        </div>
+        
+        <div class="article-meta pull-right">
+          <span>
+            <i class="icon-comments"></i>
+            <span>
+              <a href="http://larry-wang.com/2013/05/10/linux-mac-windows-nfs-samba/#comment">评论</a>
+            </span>
+          </span>
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  
+  <a href="/page/2/" class="pagination-next">下一页</a>
+  
+</nav>
+    </main>
+
+    <footer id="colophon" class="site-footer" role="contentinfo"><p class="site-info">
+  Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+  Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+  </br>
+  
+  &copy; 2017 Larry Wang
+  
+</p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>基于Arduino和Android的蓝牙遥控小车 | Larry Wang | Life on fingers...</title>
+  <meta name="author" content="Larry Wang">
+  
+  <meta name="description" content="《007-明日帝国》里的那辆酷车，着实让人心潮澎湃，一直想做一辆手机遥控的小车，直到发现Arduino，梦想得以实现。2年多之前的事了，今天回味一下。Android做上位机，通过蓝牙给Arduino发送控制指令，实现的功能有：
+
+Android触摸控制。
+Android重力感应控制。
+小车自动驾驶（">
+  
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="基于Arduino和Android的蓝牙遥控小车"/>
+  <meta property="og:site_name" content="Larry Wang"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="//res.cloudinary.com/larry/image/upload/v1480855896/lw_a7iczu.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Larry Wang" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div id="page" class="site">
+  <div id="primary" class="content-area">
+
+    <header id="header" class="inner"><div class="site-branding">
+  <h1 class="site-title">
+    <a href="/">Larry Wang</a>
+  </h1>
+  <p class="site-description">Life on fingers...</p>
+</div>
+<nav id="site-navigation" class="main-navigation" role="navigation">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+  </ul>
+</nav></header>
+
+    <main id="main" class="site-main posts-loop" role="main">
+      <article class="post article">
+
+  
+  
+    <h3 class="article-title"><span>基于Arduino和Android的蓝牙遥控小车</span></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/05/03/android-arduino-bluetooth-car/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-05-03T13:24:18.000Z">
+          2014-05-03
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>《007-明日帝国》里的那辆酷车，着实让人心潮澎湃，一直想做一辆手机遥控的小车，直到发现Arduino，梦想得以实现。2年多之前的事了，今天回味一下。<br>Android做上位机，通过蓝牙给Arduino发送控制指令，实现的功能有：</p>
+<ul>
+<li>Android触摸控制。</li>
+<li>Android重力感应控制。</li>
+<li>小车自动驾驶（红外线避障碍）。</li>
+<li>小车左右轮通过PWM变速。</li>
+</ul>
+<p>操作流程：</p>
+<ul>
+<li>给小车通电（电机电源和Arduino电源独立）。</li>
+<li>确认Android的蓝牙已开启，并且与蓝牙接收模块匹过，打开Android客户端，等待蓝牙连接成功。</li>
+<li>默认是触控模式，界面上左边操作杆控制小车左轮，右边操作杆控制右轮。操作杆向前推，对应的轮子向前进，推动幅度越大，速度越快。同理，向后推，轮子向后转。</li>
+<li>点击屏幕上的重力感应开关，进入重力感应模式，手机水平放置时，小车静止。手机向任意角度倾斜，Android会计算出左右轮的方向与速度，发送给Arduino。</li>
+<li>点击屏幕上的自动驾驶开关，进入红外避障模式，此时小车不响应Android的任何指令（退出红外避障模式指令除外），通过红外避障模块的I/O口检测，Arduino自动控制小车前进、转向、后退以及停止。</li>
+</ul>
+<p>各个模块。<br>Arduino:<br><img src="//res.cloudinary.com/larry/image/upload/v1469545955/android_arduino_1_p4y3mr.png" alt=""><br>对于Arduino的介绍就不多说了，<a href="http://www.arduino.cc/" target="_blank" rel="external">官网</a>资料很详尽。</p>
+<p>蓝牙接收模块:<br><img src="//res.cloudinary.com/larry/image/upload/v1469545944/android_arduino_2_aourtz.png" alt=""><br>这里我只用到了VCC/GND供电以及RXD/TXD与Arduino进行串口通信。</p>
+<p>红外探测模块:<br><img src="//res.cloudinary.com/larry/image/upload/v1469545944/android_arduino_3_qy8rai.png" alt=""><br>此模块由一个主模块（左）和四个子模块（右）构成。每个子模块探测单个方向的障碍物情况，主模块通过4个I/O口与Arduino通信。</p>
+<p>电机驱动模块:<br><img src="//res.cloudinary.com/larry/image/upload/v1469545944/android_arduino_4_o1g8tf.png" alt=""><br>这是一款两路的电机驱动，用来控制小车左右两边的电机。EA和EB接Arduino的PWM口，控制电机转速，IA和IB接普通I/O口，控制电机转向。OUT_A和OUT_B分别接小车两边的电机。</p>
+<p>电路图：<br><img src="//res.cloudinary.com/larry/image/upload/v1469545948/android_arduino_5_khsarl.png" alt=""></p>
+<p>主要原理：<br>蓝牙接收模块将Android发送的命令通过串口传给Arduino，Arduino对命令解析，发送相应的指令到电机驱动模块。在红外避障模式下，Arduino时刻检测红外模块的4个输出值，一旦某个值有变化（遇到障碍物），则发送相应的指令给电机驱动模块。<br>定义好Android与Arduino之间通讯的数据格式为一个8位的数字。前2位分表表示左右两边电机的转向，中间3位和最后3位分别表示左右两边电机的转速（0～255）。此外定义2个特殊的命令：进入避障模式（99000001）和离开避障模式（99000002）。<br>触控模式下，Android通过屏幕上2个操作杆的位置决定以上四个值，重力感应模式下则有手机与水平面的倾斜角度（x，y）决定。<br>Arduino主循环中读取串口的字节，每八个字节组成一条指令，根据指令控制电机。</p>
+<p>具体代码就不贴了，了解原理，代码很简单。<br>svn://larry-wang.com/android/remote_car(guest/guset)，包含Android和Arduino代码。</p>
+<p>最后贴下成品图：<br><img src="//res.cloudinary.com/larry/image/upload/q_40/v1469545962/android_arduino_car_y7icxz.png" alt=""></p>
+<p><strong>注：</strong></p>
+<ul>
+<li>避障模式的转弯逻辑有待改进，探测到前方有障碍物时，目前的逻辑是拐弯，直到前方没有障碍。但由于每方只有一个红外探头，且探测的距离有限，会导致小车只拐弯45度左右，此时还是不能前进的。可以在小车拐弯时，加一个主循环的次数，保证小车拐弯90度了再前进。</li>
+<li>为防止干扰，Arduino和电机的电源是分开来的，2个电源一定要共地。</li>
+<li>电路图通过kicad绘制。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Android/">Android</a>, <a href="/categories/Android/Arduino/">Arduino</a>
+  </span>
+
+
+          
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+  
+	<section id="comments" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'larry-wang';
+    var disqus_config = function() {
+        this.page.url = '2014/05/03/android-arduino-bluetooth-car/';
+    };
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+
+    </main>
+
+    <footer id="colophon" class="site-footer" role="contentinfo"><p class="site-info">
+  Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+  Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+  </br>
+  
+  &copy; 2017 Larry Wang
+  
+</p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

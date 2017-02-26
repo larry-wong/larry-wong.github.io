@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>CentOS下基于pptp的VPN服务搭建 | Larry Wang | Life on fingers...</title>
+  <meta name="author" content="Larry Wang">
+  
+  <meta name="description" content="有幸成功搭建了VPN服务，纪录过程以备忘。
+服务器版本：CentOS release 6.5（Final）内核版本：Linux 2.6.32-431.1.2.0.1.el6.x86_64VPS服务商：Digital Ocean
+搭建步骤：
+1. 确认内核已经加载MPPE模块1sudo modprob">
+  
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="CentOS下基于pptp的VPN服务搭建"/>
+  <meta property="og:site_name" content="Larry Wang"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="//res.cloudinary.com/larry/image/upload/v1480855896/lw_a7iczu.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Larry Wang" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div id="page" class="site">
+  <div id="primary" class="content-area">
+
+    <header id="header" class="inner"><div class="site-branding">
+  <h1 class="site-title">
+    <a href="/">Larry Wang</a>
+  </h1>
+  <p class="site-description">Life on fingers...</p>
+</div>
+<nav id="site-navigation" class="main-navigation" role="navigation">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+  </ul>
+</nav></header>
+
+    <main id="main" class="site-main posts-loop" role="main">
+      <article class="post article">
+
+  
+  
+    <h3 class="article-title"><span>CentOS下基于pptp的VPN服务搭建</span></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/12/26/centos-vpn-pptp/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-12-26T05:42:06.000Z">
+          2014-12-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>有幸成功搭建了VPN服务，纪录过程以备忘。</p>
+<p>服务器版本：CentOS release 6.5（Final）<br>内核版本：Linux 2.6.32-431.1.2.0.1.el6.x86_64<br>VPS服务商：Digital Ocean</p>
+<p>搭建步骤：</p>
+<p><strong>1. 确认内核已经加载MPPE模块</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo modprobe ppp-compress-18 &amp;&amp; echo OK</div></pre></td></tr></table></figure></p>
+<p>如果打印出来OK则表示已经加载MPPE模块。</p>
+<p><strong>2. 安装ppp和pptpd</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install ppp pptpd</div></pre></td></tr></table></figure></p>
+<p><strong>3. 备份即将修改的配置文件</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo cp /etc/ppp/options.pptpd&#123;,_back&#125;</div><div class="line">sudo cp /etc/pptpd.conf&#123;,_back&#125;</div><div class="line">sudo cp /etc/sysctl.conf&#123;,_back&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>4. 修改配置文件</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo vim /etc/ppp/options.pptpd</div></pre></td></tr></table></figure></p>
+<p>这个文件只改了dns为google的，开始没加，导致VPN连接成功之后不能访问网络，修改后的有效代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">name pptpd</div><div class="line">refuse-pap</div><div class="line">refuse-chap</div><div class="line">refuse-mschap</div><div class="line">require-mschap-v2</div><div class="line">require-mppe-128</div><div class="line">ms-dns 8.8.8.8</div><div class="line">ms-dns 8.8.4.4</div><div class="line">proxyarp</div><div class="line">lock</div><div class="line">nobsdcomp</div><div class="line">novj</div><div class="line">novjccomp</div><div class="line">nologfd</div></pre></td></tr></table></figure></p>
+<p>/etc/ppp/chap-secrets 是保存用户账号密码信息的，比较好理解<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yourusername    pptpd    yourpasswd1    *</div></pre></td></tr></table></figure></p>
+<p>/etc/pptpd.cofig 反注释下两行就OK<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">localip 192.168.0.1</div><div class="line">remoteip 192.168.0.234-238,192.168.2.245</div></pre></td></tr></table></figure></p>
+<p><strong>5. 打开内核IP转发功能</strong><br>修改 /etc/sysctl.conf, 其中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">net.ipv4.ip_forward = 0</div></pre></td></tr></table></figure></p>
+<p>修改为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">net.ipv4.ip_forward = 1</div></pre></td></tr></table></figure></p>
+<p>然后执行下列命令使之生效<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo sysctl -p</div></pre></td></tr></table></figure></p>
+<p><strong>6. 配置iptables</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">sudo iptables -A INPUT -p gre -j ACCEPT</div><div class="line">sudo iptables -A INPUT -p tcp -m tcp --dport 1723 -j ACCEPT</div><div class="line">sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT</div><div class="line">sudo iptables -A FORWARD -s 192.168.0.0/24 -o eth0 -j ACCEPT</div><div class="line">sudo iptables -A FORWARD -d 192.168.0.0/24 -i eth0 -j ACCEPT</div><div class="line">sudo iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o eth0 -j MASQUERADE</div><div class="line">sudo /etc/init.d/iptables save</div></pre></td></tr></table></figure></p>
+<p><strong>7. 启动pptpd服务</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo /etc/init.d/pptpd start</div><div class="line">sudo chkconfig pptpd on</div></pre></td></tr></table></figure></p>
+<p>至此，服务端搭建已经完成，MacOS已经可以成功连接了。</p>
+<p><strong>注：</strong></p>
+<ul>
+<li>第一次修改iptables之后没有重启pptpd，导致客户端无法连接。</li>
+<li>本文参考了<a href="http://www.cnblogs.com/sixiweb/archive/2012/11/20/2778732.html" title="Linux下搭建VPN服务器（CentOS、pptp）" target="_blank" rel="external">Linux下搭建VPN服务器（CentOS、pptp）</a>。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Linux/">Linux</a>
+  </span>
+
+
+          
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+  
+	<section id="comments" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'larry-wang';
+    var disqus_config = function() {
+        this.page.url = '2014/12/26/centos-vpn-pptp/';
+    };
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+
+    </main>
+
+    <footer id="colophon" class="site-footer" role="contentinfo"><p class="site-info">
+  Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+  Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+  </br>
+  
+  &copy; 2017 Larry Wang
+  
+</p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>
