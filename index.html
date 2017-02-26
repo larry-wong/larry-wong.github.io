@@ -51,6 +51,68 @@
 
   
   
+    <h3 class="article-title"><a href="/2017/02/26/where-ext4-space-gone/"><span>Ext4文件系统可用空间消失之谜</span></a></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/02/26/where-ext4-space-gone/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-02-26T14:08:14.842Z">
+          2017-02-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>旧1T硬盘，格式化ext4后用作数据存储。然而df后可用空间仅869.2G：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Filesystem      1K-blocks       Used Available      Use%    Mounted on</div><div class="line">/dev/sdb1       960380628       77868 911448300     1%      /mount-point</div></pre></td></tr></table></figure></p>
+<p>1T总空间换算后应为10**12/(2**30) = 931.3G。<br>实际总大小仅为960380628/(2**20) = 915.9G。<br>实际可用空间911448300/(2**20) = 869.2G。<br>空间无缘无故消失了60个G，强迫症患者岂能忍？遂google了一番。<br>原来ext4默认每16k创建一个inode，每个linode 256字节。磁盘用作多媒体文件存储的，自然不必这么多linode，于是umount后：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo mkfs.ext4 -T largefile /dev/sdb1</div></pre></td></tr></table></figure></p>
+<p>再次mount后df：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Filesystem      1K-blocks       Used        Available       Use%    Mounted on</div><div class="line">/dev/sdb1       975405876       77852       926473564       1%      /mount-point</div></pre></td></tr></table></figure></p>
+<p>975405876/(2**20) = 930.2G。<br>926473564/(2**20) = 883.6G。<br>总大小跟可用空间均提升了14G，linode占了不到1G，可以接受。<br>但是，可用空间为何这么少呢？应该跟总空间持平才是嘛。<br>继续google，得知ext4默认保留5%空间，用于root用户维护或者系统日志使用。<br>鉴于此盘完全用于存储，不必此功能：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo tune2fs -r 0 /dev/sdb1</div></pre></td></tr></table></figure></p>
+<p>再次df：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Filesystem      1K-blocks       Used        Available       Use%    Mounted on</div><div class="line">/dev/sdb1       975405876       77852       975311640       1%      /mount-point</div></pre></td></tr></table></figure></p>
+<p>可用空间跟总大小几乎持平，完美收工！</p>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Linux/">Linux</a>
+  </span>
+
+
+          
+        </div>
+        
+        <div class="article-meta pull-right">
+          <span>
+            <i class="icon-comments"></i>
+            <span>
+              <a href="http://larry-wang.com/2017/02/26/where-ext4-space-gone/#comment">Comments</a>
+            </span>
+          </span>
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post article">
+
+  
+  
     <h3 class="article-title"><a href="/2015/02/25/ie/"><span>IE的那些坑</span></a></h3>
   
 
@@ -784,93 +846,6 @@
             <i class="icon-comments"></i>
             <span>
               <a href="http://larry-wang.com/2013/05/16/avr-raspberrypi/#comment">Comments</a>
-            </span>
-          </span>
-        </div>
-        
-    </footer>
-  </div>
-</article>
-
-
-
-  <article class="post article">
-
-  
-  
-    <h3 class="article-title"><a href="/2013/05/10/linux-mac-windows-nfs-samba/"><span>Linux Mac Windows之间的文件共享（NFS &amp; Samba）</span></a></h3>
-  
-
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2013/05/10/linux-mac-windows-nfs-samba/" rel="bookmark">
-        <time class="entry-date published" datetime="2013-05-10T14:33:11.000Z">
-          2013-05-10
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>前段时间在Fedora18上搭载了NFS服务器，今天有空记录下。</p>
-<p><strong>1. 在fedora18上安装NFS服务器</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install rpcbind nfs-utils</div></pre></td></tr></table></figure></p>
-<p><strong>2. 编辑/etc/exports文件，添加要共享的文件夹。我打算在局域网共享主目录/home/larry，故我的/etc/exports文件内容如下：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[larry@localhost etc]$ cat exports</div><div class="line">/home/larry 192.168.2.8(sync,rw,anonuid=1000,anongid=1000,all_squash,insecure) 192.168.2.*(sync,ro,anonuid=1000,anongid=1000,all_squash,insecure) 192.168.2.11(sync,rw,anonuid=1000,anongid=1000,all_squash,insecure)</div></pre></td></tr></table></figure></p>
-<p>稍稍解释下：<br>anonuid/anongid：设定当客户端为匿名登陆时的用户uid/gid。<br>all_squash：无论客户端是什么用户登陆都视为匿名用户（nobody/nfsnobody）。与anonuid/anongid连用意思就很明确了：无论客户端是谁，都被至为uid和gid都为1000的这个用户，也就是larry。因为/home/larry只有larry才有全部的权限。当然你可以把它权限改成777，只不过我不喜欢这么做。查看自己的uid/gid可以使用id命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[larry@localhost etc]$ id</div><div class="line">uid=1000(larry) gid=1000(larry) groups=1000(larry)</div></pre></td></tr></table></figure></p>
-<p>我仅对ip为8和11的机器开放了写的权限，其他机器只有读的权限。<br>insecure：每次连接时分配的端口号&gt;=1024，开始没加这个，导致Mac连接时报错。</p>
-<p><strong>3. 关闭iptables</strong><br>我的iptables好像有问题，怎么配都不行，索性关了算了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo chkconfig iptables off //永久</div><div class="line">sudo service iptables stop //即时</div></pre></td></tr></table></figure></p>
-<p>我的iptables问题还真大，关闭了都不起作用，即使重启也无效。但我意外发现只要执行“service iptables start”， “service iptables stop”就好了，真是怪异。<br>于是建立文件/etc/rc.d/rc.local，更改权限为755：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo touch /etc/rc.d/rc.local</div><div class="line">sudo chmod 755 /etc/rc.d/rc.local</div></pre></td></tr></table></figure></p>
-<p>写入内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[larry@localhost etc]$ cat /etc/rc.d/rc.local </div><div class="line">#! /bin/bash</div><div class="line">service iptables start</div><div class="line">service iptables stop</div></pre></td></tr></table></figure></p>
-<p>使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl status rc-local.service</div></pre></td></tr></table></figure></p>
-<p>检查rc-local的状态，如果没有active，则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl start rc-local.service</div></pre></td></tr></table></figure></p>
-<p><strong>4. 启动nfs服务</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo systemctl enable nfs-server.service //永久</div><div class="line">sudo systemctl start nfs-server.service //即时</div></pre></td></tr></table></figure></p>
-<p>至此，服务器部分算是搞定了。</p>
-<p><strong>5. Mac客户端</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mount_nfs 192.168.2.10:/home/larry xxx</div></pre></td></tr></table></figure></p>
-<p>就把服务器的/home/larry挂载到xxx目录了。</p>
-<p><strong>6. win7客户端</strong><br>win7自带了NFS客户端了，只是默认没有开启。控制面板 –&gt; 程序 –&gt; 打开或关闭Windows功能，勾上NFS服务，等进度条走完…<br>打开cmd，敲：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mount \\192.168.2.10\home\larry x:\</div></pre></td></tr></table></figure></p>
-<p>提示没有权限，猜想以上anonuid/anongid和all_squash对win7无效，于是修改注册表：HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\ClientForNFS\CurrentVersion\Default，添加两项：AnonymousUid，AnonymousGid，值都为3e8（16进制的1000）。怎么把1000转成16进制的？大神教我的方法，在浏览器的console里输入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var a=1000;</div><div class="line">a.toString(16)</div></pre></td></tr></table></figure></p>
-<p>它就会给你答案了…</p>
-<p><strong>7. 乱码</strong><br>在win7写入到fedora的文件名中文都是乱码，在fedora：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo yum install convmv</div><div class="line">convmv -f GBK -t UTF-8 --notest -r *</div></pre></td></tr></table></figure></p>
-<p>这样就会递归地把当前目录下的文件名转化过来，但是到win7下看又是乱码了，这里便搞不定了。</p>
-<p>最后我还是使用samba来专门对windows进行共享。</p>
-<p><strong>8. samba服务器的安装</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install samba</div></pre></td></tr></table></figure></p>
-<p><strong>9. 给samba添加用户并设置密码</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo smbpasswd -a larry</div></pre></td></tr></table></figure></p>
-<p>我是把我自己加入了samba的用户组，没有另外建用户。不过提示说smbpasswd找不到，原来要先：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install samba-client</div></pre></td></tr></table></figure></p>
-<p><strong>10. 备份并修改samba配置文件</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo cp /etc/samba/smb.conf /etc/samba/smb.conf_back</div></pre></td></tr></table></figure></p>
-<p>我把/etc/samba/smb.conf后面的[homes]和[printers]都删掉了，自己加入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[larry]</div><div class="line">comment = data</div><div class="line">path = /home/larry</div><div class="line">guest ok = no</div><div class="line">writable = yes</div><div class="line">valid users = @larry</div></pre></td></tr></table></figure></p>
-<p>字面意思很好理解，只允许larry用户访问，密码上面已经设置过了。</p>
-<p><strong>11. 关闭selinux</strong><br>备份/etc/sysconfig/selinux并修改其中SELINUX值为disabled，重启生效。</p>
-<p><strong>12. 启动samba</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo systemctl enable smb.service //永久</div><div class="line">sudo systemctl start smb.service //即时</div></pre></td></tr></table></figure></p>
-<p><strong>13. windows端</strong><br>win+R，输入\192.168.2.10，会提示输入用户名密码。</p>
-<p><strong>14. Mac端</strong><br>Finder -&gt; 前往 -&gt; 连接服务器，输入：smb://192.168.2.10，会提示输入用户名密码。</p>
-<p>至此，大功告成！在使用过程中发现，服务器上某些名字怪异的文件通过NFS共享到Mac上显示不出来，通过Samba则没有问题。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-        <div class="article-meta pull-left">
-          
-  
-
-  <span class="post-categories">
-    <i class="icon-categories"></i>
-    <a href="/categories/Linux/">Linux</a>
-  </span>
-
-
-          
-        </div>
-        
-        <div class="article-meta pull-right">
-          <span>
-            <i class="icon-comments"></i>
-            <span>
-              <a href="http://larry-wang.com/2013/05/10/linux-mac-windows-nfs-samba/#comment">Comments</a>
             </span>
           </span>
         </div>

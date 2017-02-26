@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Ext4文件系统可用空间消失之谜 | Larry Wang | Life on fingers...</title>
+  <meta name="author" content="Larry Wang">
+  
+  <meta name="description" content="旧1T硬盘，格式化ext4后用作数据存储。然而df后可用空间仅869.2G：12Filesystem      1K-blocks       Used Available      Use%    Mounted on/dev/sdb1       960380628       77868 91">
+  
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="Ext4文件系统可用空间消失之谜"/>
+  <meta property="og:site_name" content="Larry Wang"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="//res.cloudinary.com/larry/image/upload/v1480855896/lw_a7iczu.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Larry Wang" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div id="page" class="site">
+  <div id="primary" class="content-area">
+
+    <header id="header" class="inner"><div class="site-branding">
+  <h1 class="site-title">
+    <a href="/">Larry Wang</a>
+  </h1>
+  <p class="site-description">Life on fingers...</p>
+</div>
+<nav id="site-navigation" class="main-navigation" role="navigation">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+</nav></header>
+
+    <main id="main" class="site-main posts-loop" role="main">
+      <article class="post article">
+
+  
+  
+    <h3 class="article-title"><span>Ext4文件系统可用空间消失之谜</span></h3>
+  
+
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/02/26/where-ext4-space-gone/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-02-26T14:08:14.842Z">
+          2017-02-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>旧1T硬盘，格式化ext4后用作数据存储。然而df后可用空间仅869.2G：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Filesystem      1K-blocks       Used Available      Use%    Mounted on</div><div class="line">/dev/sdb1       960380628       77868 911448300     1%      /mount-point</div></pre></td></tr></table></figure></p>
+<p>1T总空间换算后应为10**12/(2**30) = 931.3G。<br>实际总大小仅为960380628/(2**20) = 915.9G。<br>实际可用空间911448300/(2**20) = 869.2G。<br>空间无缘无故消失了60个G，强迫症患者岂能忍？遂google了一番。<br>原来ext4默认每16k创建一个inode，每个linode 256字节。磁盘用作多媒体文件存储的，自然不必这么多linode，于是umount后：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo mkfs.ext4 -T largefile /dev/sdb1</div></pre></td></tr></table></figure></p>
+<p>再次mount后df：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Filesystem      1K-blocks       Used        Available       Use%    Mounted on</div><div class="line">/dev/sdb1       975405876       77852       926473564       1%      /mount-point</div></pre></td></tr></table></figure></p>
+<p>975405876/(2**20) = 930.2G。<br>926473564/(2**20) = 883.6G。<br>总大小跟可用空间均提升了14G，linode占了不到1G，可以接受。<br>但是，可用空间为何这么少呢？应该跟总空间持平才是嘛。<br>继续google，得知ext4默认保留5%空间，用于root用户维护或者系统日志使用。<br>鉴于此盘完全用于存储，不必此功能：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo tune2fs -r 0 /dev/sdb1</div></pre></td></tr></table></figure></p>
+<p>再次df：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Filesystem      1K-blocks       Used        Available       Use%    Mounted on</div><div class="line">/dev/sdb1       975405876       77852       975311640       1%      /mount-point</div></pre></td></tr></table></figure></p>
+<p>可用空间跟总大小几乎持平，完美收工！</p>
+
+      
+    </div>
+    <footer class="article-footer">
+        <div class="article-meta pull-left">
+          
+  
+
+  <span class="post-categories">
+    <i class="icon-categories"></i>
+    <a href="/categories/Linux/">Linux</a>
+  </span>
+
+
+          
+        </div>
+        
+    </footer>
+  </div>
+</article>
+
+  
+	<section id="comments" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'larry-wang';
+    var disqus_config = function() {
+        this.page.url = '2017/02/26/where-ext4-space-gone/';
+    };
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+
+    </main>
+
+    <footer id="colophon" class="site-footer" role="contentinfo"><p class="site-info">
+  Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+  Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+  </br>
+  
+  &copy; 2017 Larry Wang
+  
+</p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

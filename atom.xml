@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://larry-wang.com/"/>
-  <updated>2017-02-26T09:24:03.792Z</updated>
+  <updated>2017-02-26T14:08:14.835Z</updated>
   <id>http://larry-wang.com/</id>
   
   <author>
@@ -14,6 +14,24 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Ext4文件系统可用空间消失之谜</title>
+    <link href="http://larry-wang.com/2017/02/26/where-ext4-space-gone/"/>
+    <id>http://larry-wang.com/2017/02/26/where-ext4-space-gone/</id>
+    <published>2017-02-26T14:08:14.842Z</published>
+    <updated>2017-02-26T14:08:14.835Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;旧1T硬盘，格式化ext4后用作数据存储。然而df后可用空间仅869.2G：&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;di
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://larry-wang.com/categories/Linux/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>IE的那些坑</title>
