@@ -15,7 +15,7 @@ Filesystem      1K-blocks       Used Available      Use%    Mounted on
 实际总大小仅为960380628/(2\*\*20) = 915.9G。
 实际可用空间911448300/(2\*\*20) = 869.2G。
 空间无缘无故消失了60个G，强迫症患者岂能忍？遂google了一番。
-原来ext4默认每16k创建一个inode，每个linode 256字节。磁盘用作多媒体文件存储的，自然不必这么多linode，于是umount后：
+原来ext4默认每16k创建一个inode，每个linode 256字节。此盘用作多媒体文件存储的，自然不必这么多linode，于是umount后：
 ```
 sudo mkfs.ext4 -T largefile /dev/sdb1
 ```
